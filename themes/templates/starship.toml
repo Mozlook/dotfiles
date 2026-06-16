@@ -7,11 +7,16 @@ format = """
 $os\
 $directory\
 [](fg:surface1 bg:surface2)\
-$git_branch$git_status\
-[](fg:surface2 bg:none) \
+$git_branch\
+$git_status\
+[](fg:surface2 bg:surface1)\
+$nodejs$python$rust$golang\
+[](fg:surface1)\
+$fill\
+$cmd_duration\
+$time\
+$line_break\
 $character"""
-
-right_format = """$nodejs$python$rust$golang$cmd_duration"""
 
 [palettes.dynamic]
 bg = "{{bg}}"
@@ -25,6 +30,10 @@ ok = "{{ok}}"
 warn = "{{warn}}"
 error = "{{error}}"
 info = "{{info}}"
+
+[fill]
+symbol = "·"
+style = "fg:surface2"
 
 [os]
 disabled = false
@@ -49,31 +58,38 @@ format = "[ $symbol$branch ]($style)"
 style = "fg:warn bg:surface2"
 format = "[$all_status$ahead_behind ]($style)"
 
-[character]
-success_symbol = "[](accent)"
-error_symbol = "[](error)"
-
-[cmd_duration]
-min_time = 500
-style = "fg:muted"
-format = "[ 󱎫 $duration]($style)"
-
 [nodejs]
 symbol = " "
-style = "fg:ok"
-format = "[ $symbol$version]($style)"
+style = "fg:ok bg:surface1"
+format = "[ $symbol$version ]($style)"
 
 [python]
 symbol = " "
-style = "fg:info"
-format = "[ $symbol$version]($style)"
+style = "fg:info bg:surface1"
+format = "[ $symbol$version ]($style)"
 
 [rust]
 symbol = " "
-style = "fg:accent"
-format = "[ $symbol$version]($style)"
+style = "fg:accent bg:surface1"
+format = "[ $symbol$version ]($style)"
 
 [golang]
 symbol = " "
-style = "fg:info"
-format = "[ $symbol$version]($style)"
+style = "fg:info bg:surface1"
+format = "[ $symbol$version ]($style)"
+
+[cmd_duration]
+min_time = 500
+style = "fg:warn"
+format = "[ 󱎫 $duration ]($style)"
+
+[time]
+disabled = false
+time_format = "%H:%M"
+style = "fg:muted"
+format = "[  $time](fg:muted)"
+
+[character]
+success_symbol = "[❯](bold accent)"
+error_symbol = "[❯](bold error)"
+vimcmd_symbol = "[❮](bold accent2)"

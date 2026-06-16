@@ -104,8 +104,8 @@ enable_user_service pipewire-pulse.service  || true
 
 # --- 11. fonts + first theme -------------------------------------------------
 fc-cache -f >/dev/null 2>&1 || true
-info "Applying default theme (cafe)…"
-"$HOME/.local/bin/theme-set" cafe || warn "theme-set will run on first Hyprland login instead."
+info "Rendering default theme (cafe)…"
+"$HOME/.local/bin/theme-set" --render-only cafe || warn "theme-set will run on first Hyprland login instead."
 
 ok "Done. Reboot -> SDDM -> Hyprland."
 echo "   Monitor layout: $DOTS/config/hypr/monitors.conf (per-host, gitignored)."

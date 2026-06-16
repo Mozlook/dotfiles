@@ -11,8 +11,17 @@ RENDER="$DOTS/scripts/render.py"
 CACHE="$HOME/.cache/theme"
 CONF="$HOME/.config"
 
+# Wallpaper backend: support swww and its drop-in fork awww.
+WP_CLIENT="$(command -v swww || command -v awww || true)"
+WP_DAEMON="$(command -v swww-daemon || command -v awww-daemon || true)"
+
+# --render-only: just generate the color files + marker (used during install,
+# when there is no compositor to set a wallpaper on or apps to reload).
+render_only=0
+if [ "${1:-}" = "--render-only" ]; then render_only=1; shift; fi
+
 name="${1:-}"
-[ -n "$name" ] || { echo "usage: theme-set <name>"; exit 1; }
+[ -n "$name" ] || { echo "usage: theme-set [--render-only] <name>"; exit 1; }
 
 theme_dir="$THEMES/$name"
 [ -d "$theme_dir" ] || { echo "theme-set: no such theme '$name' in $THEMES" >&2; exit 1; }
@@ -49,33 +58,39 @@ render hypr-colors.conf    "$CONF/hypr/colors.conf"
 render starship.toml       "$CONF/starship.toml"
 render nvim-palette.lua    "$CONF/nvim/lua/config/palette.lua"
 
-# --- set wallpaper (swww) — only when a Wayland session is live -------------
-# (during install there's no compositor yet; Hyprland's autostart re-runs this)
-if [ -n "${WAYLAND_DISPLAY:-}" ] && [ -n "$wallpaper" ] && [ -f "$wallpaper" ] && command -v swww >/dev/null; then
-  if ! swww query >/dev/null 2>&1; then
-    swww-daemon >/dev/null 2>&1 &
-    for _ in $(seq 1 10); do swww query >/dev/null 2>&1 && break; sleep 0.2; done
+if [ "$render_only" = 1 ] || [ -z "${WAYLAND_DISPLAY:-}" ]; then
+  # No live session (e.g. running from the installer): stop after rendering.
+  # Hyprland's autostart re-runs theme-set on login to set the wallpaper.
+  :
+else
+  # --- set wallpaper (swww / awww) ------------------------------------------
+  if [ -n "$wallpaper" ] && [ -f "$wallpaper" ] && [ -n "$WP_CLIENT" ]; then
+    if ! "$WP_CLIENT" query >/dev/null 2>&1; then
+      [ -n "$WP_DAEMON" ] && "$WP_DAEMON" >/dev/null 2>&1 &
+      for _ in $(seq 1 15); do "$WP_CLIENT" query >/dev/null 2>&1 && break; sleep 0.2; done
+    fi
+    # `timeout` guards against a dead/stale daemon socket making `img` block.
+    timeout 10 "$WP_CLIENT" img "$wallpaper" \
+      --transition-type grow --transition-pos center --transition-fps 60 \
+      --transition-duration 1.2 >/dev/null 2>&1 || true
   fi
-  swww img "$wallpaper" \
-    --transition-type grow --transition-pos center --transition-fps 60 \
-    --transition-duration 1.2 >/dev/null 2>&1 || true
-fi
 
-# --- live reloads (best-effort; silent if the app isn't running) ------------
-killall -SIGUSR2 waybar 2>/dev/null || true
-hyprctl reload >/dev/null 2>&1 || true
-swaync-client -rs >/dev/null 2>&1 || true
-# kitty: recolor every running window via remote control
-if command -v kitten >/dev/null; then
-  for sock in /tmp/kitty-*; do
-    [ -S "$sock" ] && kitten @ --to "unix:$sock" set-colors -a -c "$CONF/kitty/theme.conf" 2>/dev/null || true
-  done
-fi
-# neovim: tell every listening instance to re-apply colors
-if command -v nvim >/dev/null; then
-  for sock in "${XDG_RUNTIME_DIR:-/tmp}"/nvim.*.0 /tmp/nvim.*; do
-    [ -S "$sock" ] && nvim --server "$sock" --remote-send '<C-\><C-N>:lua pcall(function() require("config.colors").apply() end)<CR>' 2>/dev/null || true
-  done
+  # --- live reloads (best-effort; silent if the app isn't running) ----------
+  killall -SIGUSR2 waybar 2>/dev/null || true
+  hyprctl reload >/dev/null 2>&1 || true
+  swaync-client -rs >/dev/null 2>&1 || true
+  # kitty: recolor every running window via remote control
+  if command -v kitten >/dev/null; then
+    for sock in /tmp/kitty-*; do
+      [ -S "$sock" ] && kitten @ --to "unix:$sock" set-colors -a -c "$CONF/kitty/theme.conf" 2>/dev/null || true
+    done
+  fi
+  # neovim: tell every listening instance to re-apply colors
+  if command -v nvim >/dev/null; then
+    for sock in "${XDG_RUNTIME_DIR:-/tmp}"/nvim.*.0 /tmp/nvim.*; do
+      [ -S "$sock" ] && nvim --server "$sock" --remote-send '<C-\><C-N>:lua pcall(function() require("config.colors").apply() end)<CR>' 2>/dev/null || true
+    done
+  fi
 fi
 
 # --- persist current theme for next login -----------------------------------

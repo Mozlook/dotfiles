@@ -42,5 +42,8 @@ command -v atuin    >/dev/null && eval "$(atuin init zsh)"
 [ -f /usr/share/fzf/key-bindings.zsh ] && source /usr/share/fzf/key-bindings.zsh
 [ -f /usr/share/fzf/completion.zsh ] && source /usr/share/fzf/completion.zsh
 
+# clear the screen and re-show fastfetch (Ctrl-L still does a plain clear)
+clear() { command clear; command -v fastfetch >/dev/null && fastfetch; }
+
 # greeting
 command -v fastfetch >/dev/null && fastfetch
