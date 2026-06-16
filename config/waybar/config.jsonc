@@ -9,7 +9,12 @@
 
     "modules-left": ["custom/launcher", "hyprland/workspaces", "hyprland/window"],
     "modules-center": ["clock"],
-    "modules-right": ["tray", "pulseaudio", "network", "bluetooth", "cpu", "memory", "battery", "custom/theme"],
+    "modules-right": [
+        "custom/media", "idle_inhibitor", "custom/updates",
+        "backlight", "pulseaudio", "network", "bluetooth", "battery",
+        "cpu", "memory", "custom/notifications", "tray",
+        "custom/theme", "custom/power"
+    ],
 
     "custom/launcher": {
         "format": "󰣇",
@@ -20,28 +25,104 @@
     "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate",
+        "on-scroll-up": "hyprctl dispatch workspace e+1",
+        "on-scroll-down": "hyprctl dispatch workspace e-1",
         "format-icons": {
-            "1": "一", "2": "二", "3": "三",
-            "4": "四", "5": "五", "6": "六",
-            "default": "•",
-            "active": "●"
+            "1": "1", "2": "2", "3": "3",
+            "4": "q", "5": "w", "6": "e",
+            "default": "•"
         }
     },
 
     "hyprland/window": {
         "format": "{title}",
-        "max-length": 60,
-        "separate-outputs": true
+        "max-length": 50,
+        "separate-outputs": true,
+        "rewrite": { "": "  ~" }
     },
 
     "clock": {
-        "format": "{:%H:%M}",
-        "format-alt": "{:%a %d %b}",
+        "format": " {:%H:%M}",
+        "format-alt": " {:%a, %d %b}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "month",
-            "format": { "today": "<span color='#F2C96D'><b>{}</b></span>" }
+            "format": {
+                "today": "<span color='#F2C96D'><b>{}</b></span>",
+                "weekdays": "<span color='#7FA6C9'><b>{}</b></span>"
+            }
         }
+    },
+
+    "custom/media": {
+        "format": "󰎈 {}",
+        "max-length": 38,
+        "interval": 2,
+        "exec": "playerctl metadata --format '{{title}} — {{artist}}' 2>/dev/null",
+        "exec-if": "playerctl status 2>/dev/null | grep -q Playing",
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous",
+        "tooltip": false
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": { "activated": "󰅶", "deactivated": "󰾪" },
+        "tooltip-format-activated": "Caffeine on (won't sleep)",
+        "tooltip-format-deactivated": "Caffeine off"
+    },
+
+    "custom/updates": {
+        "format": "󰚰 {}",
+        "interval": 3600,
+        "exec": "checkupdates 2>/dev/null | wc -l",
+        "exec-if": "[ $(checkupdates 2>/dev/null | wc -l) -gt 0 ]",
+        "on-click": "kitty -e sh -c 'sudo pacman -Syu; echo; read -n1 -p \"Done. Press any key…\"'",
+        "tooltip-format": "Pending updates — click to upgrade"
+    },
+
+    "backlight": {
+        "format": "{icon} {percent}%",
+        "format-icons": ["󰃞", "󰃟", "󰃠"],
+        "on-scroll-up": "brightnessctl set 5%+",
+        "on-scroll-down": "brightnessctl set 5%-",
+        "tooltip": false
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 muted",
+        "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
+        "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "scroll-step": 5
+    },
+
+    "network": {
+        "format-wifi": "  {signalStrength}%",
+        "format-ethernet": "󰈀 ",
+        "format-disconnected": "󰤭 ",
+        "tooltip-format": "{ifname}  {ipaddr}",
+        "tooltip-format-wifi": "{essid}  ({signalStrength}%)\n{ifname}  {ipaddr}",
+        "on-click": "kitty -e nmtui"
+    },
+
+    "bluetooth": {
+        "format": " ",
+        "format-disabled": "󰂲 ",
+        "format-connected": " {num_connections}",
+        "tooltip-format-connected": "{device_enumerate}",
+        "on-click": "blueman-manager"
+    },
+
+    "battery": {
+        "states": { "warning": 30, "critical": 15 },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-plugged": "󰚥 {capacity}%",
+        "format-icons": ["󰁺", "󰁻", "󰁽", "󰁿", "󰂁", "󰂀", "󰁹"],
+        "tooltip-format": "{timeTo}"
     },
 
     "cpu": {
@@ -52,40 +133,30 @@
 
     "memory": {
         "format": " {percentage}%",
-        "interval": 3
+        "interval": 3,
+        "tooltip-format": "{used:0.1f} / {total:0.1f} GiB",
+        "on-click": "kitty -e btop"
     },
 
-    "battery": {
-        "states": { "warning": 30, "critical": 15 },
-        "format": "{icon} {capacity}%",
-        "format-charging": "󰂄 {capacity}%",
-        "format-plugged": "󰚥 {capacity}%",
-        "format-icons": ["󰁺", "󰁻", "󰁽", "󰁿", "󰂁", "󰂀", "󰁹"],
-        "tooltip": true
-    },
-
-    "network": {
-        "format-wifi": "  {signalStrength}%",
-        "format-ethernet": "󰈀 ",
-        "format-disconnected": "󰤭 ",
-        "tooltip-format": "{ifname} {ipaddr}",
-        "on-click": "kitty -e nmtui"
-    },
-
-    "bluetooth": {
-        "format": " ",
-        "format-disabled": "󰂲 ",
-        "format-connected": " {num_connections}",
-        "on-click": "blueman-manager"
-    },
-
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": "󰝟 ",
-        "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
-        "on-click": "pavucontrol",
-        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-        "scroll-step": 5
+    "custom/notifications": {
+        "tooltip": false,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "󰂚",
+            "none": "󰂜",
+            "dnd-notification": "󰂛",
+            "dnd-none": "󰪑",
+            "inhibited-notification": "󰂚",
+            "inhibited-none": "󰂜",
+            "dnd-inhibited-notification": "󰂛",
+            "dnd-inhibited-none": "󰪑"
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
     },
 
     "tray": {
@@ -97,5 +168,11 @@
         "format": "󰏘",
         "tooltip": false,
         "on-click": "~/.local/bin/wallpaper-picker"
+    },
+
+    "custom/power": {
+        "format": "⏻",
+        "tooltip": false,
+        "on-click": "wlogout"
     }
 }
