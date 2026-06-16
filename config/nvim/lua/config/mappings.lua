@@ -1,0 +1,97 @@
+local wk = require("which-key")
+
+wk.add({
+  { "<leader>f", group = "find" },
+  { "<leader>l", group = "lsp" },
+  { "<leader>t", group = "terminal" },
+  { "<leader>h", group = "harpoon" },
+})
+
+-- Harpoon
+vim.keymap.set("n", "<leader>a", function()
+  require("harpoon"):list():add()
+end, { desc = "Harpoon: add file" })
+
+vim.keymap.set("n", "<C-e>", function()
+  local harpoon = require("harpoon")
+  harpoon.ui:toggle_quick_menu(harpoon:list())
+end, { desc = "Harpoon: quick menu" })
+
+vim.keymap.set("n", "<leader>h1", function()
+  require("harpoon"):list():select(1)
+end, { desc = "Harpoon: slot 1" })
+vim.keymap.set("n", "<leader>h2", function()
+  require("harpoon"):list():select(2)
+end, { desc = "Harpoon: slot 2" })
+vim.keymap.set("n", "<leader>h3", function()
+  require("harpoon"):list():select(3)
+end, { desc = "Harpoon: slot 3" })
+vim.keymap.set("n", "<leader>h4", function()
+  require("harpoon"):list():select(4)
+end, { desc = "Harpoon: slot 4" })
+
+-- Telescope
+vim.keymap.set("n", "<leader>ff", function()
+  require("telescope.builtin").find_files()
+end, { desc = "Files" })
+vim.keymap.set("n", "<leader>fg", function()
+  require("telescope.builtin").live_grep()
+end, { desc = "Grep" })
+vim.keymap.set("n", "<leader>fb", function()
+  require("telescope.builtin").buffers()
+end, { desc = "Buffers" })
+vim.keymap.set("n", "<leader>fh", function()
+  require("telescope.builtin").help_tags()
+end, { desc = "Help" })
+vim.keymap.set("n", "<leader>fd", function()
+  require("telescope.builtin").diagnostics()
+end, { desc = "Diagnostics" })
+
+-- LSP
+vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, { desc = "Rename" })
+vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, { desc = "Code Action" })
+vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
+vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "LSP: Go to Definition" })
+vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "LSP: References" })
+vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "LSP: Hover" })
+
+-- Toggleterm
+vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<cr>", { desc = "Terminal: toggle" })
+vim.keymap.set("n", "<leader>tv", function()
+  require("toggleterm.terminal").Terminal:new({ direction = "vertical" }):toggle()
+end, { desc = "Terminal: vertical" })
+vim.keymap.set("n", "<leader>th", function()
+  require("toggleterm.terminal").Terminal:new({ direction = "horizontal" }):toggle()
+end, { desc = "Terminal: horizontal" })
+
+-- Utility
+vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "File explorer (netrw)" })
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
+vim.api.nvim_set_keymap("n", "<leader>tf", "<Plug>PlenaryTestFile", { noremap = false, silent = false })
+vim.keymap.set("n", "J", "mzJ`z", { desc = "Join line below (keep cursor)" })
+vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Scroll down (center)" })
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scroll up (center)" })
+vim.keymap.set("n", "n", "nzzzv", { desc = "Next match (center)" })
+vim.keymap.set("n", "N", "Nzzzv", { desc = "Prev match (center)" })
+vim.keymap.set("n", "=ap", "ma=ap'a", { desc = "Reformat text object" })
+vim.keymap.set("n", "<leader>zig", "<cmd>LspRestart<cr>", { desc = "Restart LSP" })
+vim.keymap.set("x", "<leader>p", [["_dP]], { desc = "Paste over (keep clipboard)" })
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank to system clipboard" })
+vim.keymap.set("n", "<leader>Y", [["+Y]], { desc = "Yank line to system clipboard" })
+vim.keymap.set({ "n", "v" }, "<leader>D", '"_d', { desc = "Delete (black hole)" })
+vim.keymap.set("i", "<C-c>", "<Esc>", { desc = "Ctrl-C as Escape" })
+vim.keymap.set("n", "Q", "<nop>", { desc = "Disable Ex-mode" })
+vim.keymap.set("n", "<M-h>", "<cmd>silent !tmux neww tmux-sessionizer -s 0<CR>", { desc = "Tmux session 0" })
+vim.keymap.set("n", "<M-t>", "<cmd>silent !tmux neww tmux-sessionizer -s 1<CR>", { desc = "Tmux session 1" })
+vim.keymap.set("n", "<M-n>", "<cmd>silent !tmux neww tmux-sessionizer -s 2<CR>", { desc = "Tmux session 2" })
+vim.keymap.set("n", "<M-s>", "<cmd>silent !tmux neww tmux-sessionizer -s 3<CR>", { desc = "Tmux session 3" })
+vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz", { desc = "Quickfix next" })
+vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz", { desc = "Quickfix prev" })
+vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz", { desc = "Locallist next" })
+vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { desc = "Locallist prev" })
+vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Search & replace word" })
+vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true, desc = "Make file executable" })
+vim.keymap.set("n", "<leader><leader>", function()
+  vim.cmd("source %")
+end, { desc = "Reload current file" })

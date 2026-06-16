@@ -1,0 +1,9 @@
+# AUR packages — installed with: yay -S --needed - < packages/aur.txt
+# Comments and blank lines are stripped by install.sh.
+
+matugen-bin
+wlogout
+bibata-cursor-theme
+sddm-astronaut-theme
+brave-bin
+obsidian

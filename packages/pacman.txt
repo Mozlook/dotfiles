@@ -1,0 +1,94 @@
+# Official repo packages — installed with: pacman -S --needed - < packages/pacman.txt
+# Comments and blank lines are stripped by install.sh.
+
+# --- shell ---
+zsh
+zsh-autosuggestions
+zsh-syntax-highlighting
+starship
+
+# --- hyprland + session ---
+hyprland
+xdg-desktop-portal-hyprland
+hyprlock
+hypridle
+hyprpolkitagent
+qt5-wayland
+qt6-wayland
+
+# --- bar / launcher / notifications ---
+waybar
+rofi-wayland
+swaync
+
+# --- wayland desktop glue ---
+swww
+cliphist
+wl-clipboard
+grim
+slurp
+swappy
+brightnessctl
+playerctl
+pavucontrol
+
+# --- audio ---
+pipewire
+pipewire-pulse
+pipewire-alsa
+wireplumber
+
+# --- network / bluetooth ---
+networkmanager
+network-manager-applet
+bluez
+bluez-utils
+blueman
+
+# --- login ---
+sddm
+
+# --- terminal / cli ---
+kitty
+neovim
+fastfetch
+btop
+eza
+bat
+fd
+ripgrep
+fzf
+zoxide
+atuin
+stow
+git
+unzip
+wget
+
+# --- fonts ---
+ttf-jetbrains-mono-nerd
+noto-fonts
+noto-fonts-emoji
+ttf-font-awesome
+
+# --- look & feel ---
+nwg-look
+qt5ct
+qt6ct
+kvantum
+papirus-icon-theme
+
+# --- editor/build deps for nvim LSP/treesitter ---
+gcc
+make
+nodejs
+npm
+
+# --- theming generator (extracts a 16-color palette from a wallpaper) ---
+python
+python-pywal
+
+# --- apps ---
+firefox
+nautilus
+discord

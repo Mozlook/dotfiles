@@ -1,0 +1,23 @@
+# Per-host / generated files — never tracked.
+
+# Hyprland per-host
+config/hypr/monitors.conf
+config/hypr/env.conf
+
+# Generated color files (rendered from themes/templates by theme-set)
+config/waybar/colors.css
+config/kitty/theme.conf
+config/rofi/colors.rasi
+config/swaync/colors.css
+config/hypr/colors.conf
+config/nvim/lua/config/palette.lua
+
+# Backups created by the installer
+*.bak
+
+# Editor / misc
+*.swp
+
+# python bytecode
+__pycache__/
+*.pyc

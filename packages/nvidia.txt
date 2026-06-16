@@ -1,0 +1,6 @@
+# NVIDIA packages — installed only when install.sh detects an NVIDIA GPU.
+nvidia-dkms
+nvidia-utils
+lib32-nvidia-utils
+egl-wayland
+libva-nvidia-driver

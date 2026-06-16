@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# theme-set <name> — apply a curated/generated palette to every app and reload.
+# Resolves the repo via its own symlink, so it works from ~/.local/bin.
+set -euo pipefail
+
+SELF="$(readlink -f "$0")"
+DOTS="$(dirname "$(dirname "$SELF")")"
+THEMES="$DOTS/themes"
+TPL="$THEMES/templates"
+RENDER="$DOTS/scripts/render.py"
+CACHE="$HOME/.cache/theme"
+CONF="$HOME/.config"
+
+name="${1:-}"
+[ -n "$name" ] || { echo "usage: theme-set <name>"; exit 1; }
+
+theme_dir="$THEMES/$name"
+[ -d "$theme_dir" ] || { echo "theme-set: no such theme '$name' in $THEMES" >&2; exit 1; }
+
+palette="$theme_dir/palette.json"
+
+# --- locate wallpaper (any common extension) --------------------------------
+wallpaper=""
+for ext in jpg jpeg png webp; do
+  [ -f "$theme_dir/wallpaper.$ext" ] && { wallpaper="$theme_dir/wallpaper.$ext"; break; }
+done
+
+# --- hybrid: generate palette from wallpaper if curated one is missing ------
+if [ ! -f "$palette" ]; then
+  [ -n "$wallpaper" ] || { echo "theme-set: '$name' has neither palette.json nor a wallpaper" >&2; exit 1; }
+  echo ":: no curated palette for '$name' — generating with matugen…"
+  "$(dirname "$SELF")/theme-gen" "$wallpaper" "$palette"
+fi
+
+# wallpaper path may also be stored inside the palette (relative to theme dir)
+if [ -z "$wallpaper" ]; then
+  rel="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("wallpaper",""))' "$palette")"
+  [ -n "$rel" ] && wallpaper="$theme_dir/$rel"
+fi
+
+# --- render every template to its target ------------------------------------
+mkdir -p "$CONF"/{waybar,kitty,rofi,swaync,hypr,nvim/lua/config}
+render() { python3 "$RENDER" "$palette" "$TPL/$1" "$2"; }
+render waybar-colors.css   "$CONF/waybar/colors.css"
+render kitty-theme.conf    "$CONF/kitty/theme.conf"
+render rofi-colors.rasi    "$CONF/rofi/colors.rasi"
+render swaync-colors.css   "$CONF/swaync/colors.css"
+render hypr-colors.conf    "$CONF/hypr/colors.conf"
+render starship.toml       "$CONF/starship.toml"
+render nvim-palette.lua    "$CONF/nvim/lua/config/palette.lua"
+
+# --- set wallpaper (swww) ----------------------------------------------------
+if [ -n "$wallpaper" ] && [ -f "$wallpaper" ]; then
+  if command -v swww >/dev/null; then
+    swww query >/dev/null 2>&1 || { swww-daemon >/dev/null 2>&1 & sleep 0.5; }
+    swww img "$wallpaper" \
+      --transition-type grow --transition-pos center --transition-fps 60 \
+      --transition-duration 1.2 >/dev/null 2>&1 || true
+  fi
+fi
+
+# --- live reloads (best-effort; silent if the app isn't running) ------------
+killall -SIGUSR2 waybar 2>/dev/null || true
+hyprctl reload >/dev/null 2>&1 || true
+swaync-client -rs >/dev/null 2>&1 || true
+# kitty: recolor every running window via remote control
+if command -v kitten >/dev/null; then
+  for sock in /tmp/kitty-*; do
+    [ -S "$sock" ] && kitten @ --to "unix:$sock" set-colors -a -c "$CONF/kitty/theme.conf" 2>/dev/null || true
+  done
+fi
+# neovim: tell every listening instance to re-apply colors
+if command -v nvim >/dev/null; then
+  for sock in "${XDG_RUNTIME_DIR:-/tmp}"/nvim.*.0 /tmp/nvim.*; do
+    [ -S "$sock" ] && nvim --server "$sock" --remote-send '<C-\><C-N>:lua pcall(function() require("config.colors").apply() end)<CR>' 2>/dev/null || true
+  done
+fi
+
+# --- persist current theme for next login -----------------------------------
+mkdir -p "$CACHE"
+printf '%s\n' "$name" > "$CACHE/current"
+ln -sf "$wallpaper" "$CACHE/wallpaper" 2>/dev/null || true
+
+echo ":: theme '$name' applied."

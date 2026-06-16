@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# theme-gen <image> [out-palette.json] — extract a canonical palette from a
+# wallpaper using pywal, normalized into our palette.json format.
+# If out is omitted, prints the JSON to stdout.
+set -euo pipefail
+
+SELF="$(readlink -f "$0")"
+DOTS="$(dirname "$(dirname "$SELF")")"
+
+img="${1:-}"
+out="${2:-}"
+[ -f "$img" ] || { echo "usage: theme-gen <image> [out.json]" >&2; exit 1; }
+
+command -v wal >/dev/null || { echo "theme-gen: pywal ('wal') not installed" >&2; exit 1; }
+
+# Generate palette only — don't touch wallpaper, terminals, tty or reloads.
+wal -i "$img" -n -s -t -e -q >/dev/null 2>&1
+
+walcolors="${XDG_CACHE_HOME:-$HOME/.cache}/wal/colors.json"
+[ -f "$walcolors" ] || { echo "theme-gen: pywal produced no colors.json" >&2; exit 1; }
+
+name="$(basename "${out:-$img}")"; name="${name%.*}"
+tmp="$(mktemp)"
+python3 "$DOTS/scripts/wal2palette.py" "$walcolors" "$tmp" "$name" "$(basename "$img")" >/dev/null
+
+if [ -n "$out" ]; then
+  mkdir -p "$(dirname "$out")"
+  mv "$tmp" "$out"
+  echo ":: palette generated -> $out"
+else
+  cat "$tmp"; rm -f "$tmp"
+fi

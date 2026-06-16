@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# wallpaper-picker — rofi thumbnail grid of themes; selection applies via theme-set.
+# A "＋ Add wallpaper…" entry imports a new image and auto-generates its palette.
+set -euo pipefail
+
+SELF="$(readlink -f "$0")"
+DOTS="$(dirname "$(dirname "$SELF")")"
+THEMES="$DOTS/themes"
+THEME_SET="$(dirname "$SELF")/theme-set"
+ADD="＋ Add wallpaper…"
+ROFI_THEME="$HOME/.config/rofi/wallpaper.rasi"
+
+wallpaper_of() {
+  for ext in jpg jpeg png webp; do
+    [ -f "$THEMES/$1/wallpaper.$ext" ] && { echo "$THEMES/$1/wallpaper.$ext"; return; }
+  done
+}
+
+# --- build the theme grid ----------------------------------------------------
+menu() {
+  for d in "$THEMES"/*/; do
+    name="$(basename "$d")"
+    [ "$name" = "templates" ] && continue
+    wp="$(wallpaper_of "$name")"
+    if [ -n "$wp" ]; then
+      printf '%s\0icon\x1f%s\n' "$name" "$wp"
+    else
+      printf '%s\n' "$name"
+    fi
+  done
+  printf '%s\n' "$ADD"
+}
+
+choice="$(menu | rofi -dmenu -show-icons -p "Theme" \
+            ${ROFI_THEME:+-theme "$ROFI_THEME"} 2>/dev/null)" || exit 0
+[ -n "$choice" ] || exit 0
+
+# --- import flow -------------------------------------------------------------
+if [ "$choice" = "$ADD" ]; then
+  mapfile -t imgs < <(find "$HOME/Pictures" "$HOME/Wallpapers" \
+       "$HOME/.local/share/wallpapers" -type f \
+       \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) \
+       2>/dev/null | sort)
+  [ "${#imgs[@]}" -gt 0 ] || { notify-send "Wallpapers" "No images found in ~/Pictures, ~/Wallpapers." 2>/dev/null; exit 0; }
+
+  pick="$(for f in "${imgs[@]}"; do printf '%s\0icon\x1f%s\n' "$(basename "$f")" "$f"; done \
+          | rofi -dmenu -show-icons -p "Import" ${ROFI_THEME:+-theme "$ROFI_THEME"} 2>/dev/null)" || exit 0
+  [ -n "$pick" ] || exit 0
+
+  src=""; for f in "${imgs[@]}"; do [ "$(basename "$f")" = "$pick" ] && { src="$f"; break; }; done
+  [ -n "$src" ] || exit 0
+
+  name="${pick%.*}"; name="$(echo "$name" | tr ' ' '-' | tr -cd '[:alnum:]-_')"
+  ext="${src##*.}"
+  mkdir -p "$THEMES/$name"
+  cp -f "$src" "$THEMES/$name/wallpaper.$ext"
+  rm -f "$THEMES/$name/palette.json"   # force fresh generation
+  notify-send "Theme" "Generating palette for '$name'…" 2>/dev/null || true
+  exec "$THEME_SET" "$name"
+fi
+
+# --- apply existing theme ----------------------------------------------------
+exec "$THEME_SET" "$choice"
