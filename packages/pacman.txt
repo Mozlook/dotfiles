@@ -22,7 +22,7 @@ rofi-wayland
 swaync
 
 # --- wayland desktop glue ---
-swww
+# NOTE: swww lives in the AUR (see packages/aur.txt), not in extra.
 cliphist
 wl-clipboard
 grim
