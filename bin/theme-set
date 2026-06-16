@@ -49,14 +49,16 @@ render hypr-colors.conf    "$CONF/hypr/colors.conf"
 render starship.toml       "$CONF/starship.toml"
 render nvim-palette.lua    "$CONF/nvim/lua/config/palette.lua"
 
-# --- set wallpaper (swww) ----------------------------------------------------
-if [ -n "$wallpaper" ] && [ -f "$wallpaper" ]; then
-  if command -v swww >/dev/null; then
-    swww query >/dev/null 2>&1 || { swww-daemon >/dev/null 2>&1 & sleep 0.5; }
-    swww img "$wallpaper" \
-      --transition-type grow --transition-pos center --transition-fps 60 \
-      --transition-duration 1.2 >/dev/null 2>&1 || true
+# --- set wallpaper (swww) — only when a Wayland session is live -------------
+# (during install there's no compositor yet; Hyprland's autostart re-runs this)
+if [ -n "${WAYLAND_DISPLAY:-}" ] && [ -n "$wallpaper" ] && [ -f "$wallpaper" ] && command -v swww >/dev/null; then
+  if ! swww query >/dev/null 2>&1; then
+    swww-daemon >/dev/null 2>&1 &
+    for _ in $(seq 1 10); do swww query >/dev/null 2>&1 && break; sleep 0.2; done
   fi
+  swww img "$wallpaper" \
+    --transition-type grow --transition-pos center --transition-fps 60 \
+    --transition-duration 1.2 >/dev/null 2>&1 || true
 fi
 
 # --- live reloads (best-effort; silent if the app isn't running) ------------
