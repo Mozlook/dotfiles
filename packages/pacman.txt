@@ -83,6 +83,8 @@ gcc
 make
 nodejs
 npm
+# nvim-treesitter (main branch) builds parsers with the `tree-sitter` CLI
+tree-sitter-cli
 
 # --- theming generator (extracts a 16-color palette from a wallpaper) ---
 python
