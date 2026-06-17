@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# sddm-sync — install the user-rendered astronaut login theme into the
+# root-owned SDDM theme directory.
+#
+# Invoked by theme-set through a NOPASSWD sudoers rule. Takes NO arguments on
+# purpose: it only ever reads from $SUDO_USER's staging cache and writes to a
+# fixed set of paths inside the astronaut theme, so the rule can't be abused to
+# touch arbitrary files.
+set -euo pipefail
+
+THEME_DIR="/usr/share/sddm/themes/sddm-astronaut-theme"
+META="$THEME_DIR/metadata.desktop"
+[ -d "$THEME_DIR" ] || exit 0   # theme not installed — nothing to do
+
+user="${SUDO_USER:-}"
+[ -n "$user" ] || { echo "sddm-sync: must be run via sudo" >&2; exit 1; }
+home="$(getent passwd "$user" | cut -d: -f6)"
+stage="$home/.cache/theme/sddm"
+[ -f "$stage/theme.conf" ] || exit 0   # nothing staged yet
+
+# 1. rendered colors + layout
+install -Dm644 "$stage/theme.conf" "$THEME_DIR/Themes/dotfiles.conf"
+
+# 2. wallpaper (staged as wallpaper.<ext>) -> Backgrounds/dotfiles.<ext>
+rm -f "$THEME_DIR"/Backgrounds/dotfiles.* 2>/dev/null || true
+for f in "$stage"/wallpaper.*; do
+  [ -f "$f" ] && install -Dm644 "$f" "$THEME_DIR/Backgrounds/dotfiles.${f##*.}"
+done
+
+# 3. make the theme use our config (re-assert in case a package update reset it)
+if [ -f "$META" ] && ! grep -q '^ConfigFile=Themes/dotfiles.conf' "$META"; then
+  sed -i 's|^ConfigFile=.*|ConfigFile=Themes/dotfiles.conf|' "$META"
+fi

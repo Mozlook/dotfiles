@@ -58,6 +58,24 @@ render hypr-colors.conf    "$CONF/hypr/colors.conf"
 render starship.toml       "$CONF/starship.toml"
 render nvim-palette.lua    "$CONF/nvim/lua/config/palette.lua"
 
+# --- SDDM login screen (theme-aware) ----------------------------------------
+# Render as the user into a staging cache, then let the passwordless `sddm-sync`
+# helper copy it into the root-owned theme dir. Best-effort: if the helper or
+# its sudoers rule isn't installed yet, this is silently skipped (never blocks).
+SDDM_STAGE="$CACHE/sddm"
+mkdir -p "$SDDM_STAGE"
+render sddm-astronaut.conf "$SDDM_STAGE/theme.conf"
+rm -f "$SDDM_STAGE"/wallpaper.* 2>/dev/null || true
+if [ -n "$wallpaper" ] && [ -f "$wallpaper" ]; then
+  cp -f "$wallpaper" "$SDDM_STAGE/wallpaper.${wallpaper##*.}"
+  sed -i "s|@@BG@@|Backgrounds/dotfiles.${wallpaper##*.}|" "$SDDM_STAGE/theme.conf"
+else
+  sed -i "s|@@BG@@||" "$SDDM_STAGE/theme.conf"
+fi
+if command -v sddm-sync >/dev/null 2>&1; then
+  sudo -n sddm-sync >/dev/null 2>&1 || true
+fi
+
 if [ "$render_only" = 1 ] || [ -z "${WAYLAND_DISPLAY:-}" ]; then
   # No live session (e.g. running from the installer): stop after rendering.
   # Hyprland's autostart re-runs theme-set on login to set the wallpaper.

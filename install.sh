@@ -89,10 +89,21 @@ fi
 
 # --- 10. services ------------------------------------------------------------
 info "Enabling services…"
-# select the SDDM theme (the package only installs it; it must be chosen here)
+# select + theme the SDDM login screen (theme-aware: follows SUPER+T)
 if pacman -Qq sddm-astronaut-theme >/dev/null 2>&1; then
   sudo install -d /etc/sddm.conf.d
   printf '[Theme]\nCurrent=sddm-astronaut-theme\n' | sudo tee /etc/sddm.conf.d/10-theme.conf >/dev/null
+  # passwordless helper: copies the user-rendered login theme into the
+  # root-owned theme dir; called by theme-set on every theme switch.
+  sudo install -Dm755 "$DOTS/scripts/sddm-sync" /usr/local/bin/sddm-sync
+  printf '%s ALL=(root) NOPASSWD: /usr/local/bin/sddm-sync\n' "$(id -un)" \
+    | sudo tee /etc/sudoers.d/99-sddm-sync >/dev/null
+  sudo chmod 440 /etc/sudoers.d/99-sddm-sync
+  sudo visudo -cf /etc/sudoers.d/99-sddm-sync >/dev/null \
+    || { warn "sudoers rule invalid — removing it"; sudo rm -f /etc/sudoers.d/99-sddm-sync; }
+  # point the astronaut theme at our generated config
+  meta=/usr/share/sddm/themes/sddm-astronaut-theme/metadata.desktop
+  [ -f "$meta" ] && sudo sed -i 's|^ConfigFile=.*|ConfigFile=Themes/dotfiles.conf|' "$meta"
 fi
 enable_system_service sddm.service
 enable_system_service NetworkManager.service
