@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# network-menu — rofi Wi-Fi picker over NetworkManager.
+# Lists nearby networks, connects (asks for password when needed), toggles the
+# radio, or opens nm-connection-editor for advanced settings. Matches the
+# dotfiles rofi theme.
+set -uo pipefail
+
+THEME="$HOME/.config/rofi/network.rasi"
+WIFI=$''      # nf-fa-wifi
+LOCK=$''      # nf-fa-lock
+CHECK=$''     # nf-fa-check
+
+rofi_menu() { rofi -dmenu -i -theme "$THEME" -p "Wi-Fi" "$@"; }
+notify() { command -v notify-send >/dev/null 2>&1 && notify-send -a "Wi-Fi" "$1" "${2:-}" || true; }
+
+# --- radio off: only offer to enable -----------------------------------------
+if [ "$(nmcli -t radio wifi)" = "disabled" ]; then
+    sel="$(printf '%s  Enable Wi-Fi' "$WIFI" | rofi_menu)"
+    [ -n "$sel" ] && { nmcli radio wifi on && notify "Wi-Fi enabled"; }
+    exit 0
+fi
+
+nmcli device wifi rescan >/dev/null 2>&1 || true
+
+# --- build the network list (strongest first, deduped) -----------------------
+list="$(nmcli --terse --escape no --fields IN-USE,SIGNAL,SECURITY,SSID device wifi \
+    | sort -t: -k2 -nr \
+    | awk -F: -v w="$WIFI" -v lock="$LOCK" -v chk="$CHECK" '
+        $4 == "" { next }                 # skip hidden / empty SSIDs
+        seen[$4]++ { next }               # dedupe by SSID
+        {
+            sec  = ($3 == "" || $3 == "--") ? "" : " " lock
+            mark = ($1 == "*")            ? " " chk  : ""
+            printf "%s  %s%s%s\n", w, $4, sec, mark
+        }')"
+
+menu="$list
+  Disable Wi-Fi
+  Network settings…"
+
+sel="$(printf '%s\n' "$menu" | rofi_menu)"
+[ -z "$sel" ] && exit 0
+
+case "$sel" in
+    *"Disable Wi-Fi")     nmcli radio wifi off && notify "Wi-Fi disabled"; exit 0 ;;
+    *"Network settings…") nm-connection-editor >/dev/null 2>&1 & exit 0 ;;
+esac
+
+# --- recover the bare SSID from the decorated line ---------------------------
+ssid="${sel#*"  "}"          # drop leading icon + 2 spaces
+ssid="${ssid% "$CHECK"}"     # drop trailing active marker
+ssid="${ssid% "$LOCK"}"      # drop trailing lock marker
+[ -z "$ssid" ] && exit 0
+
+# --- already a saved connection? just bring it up ----------------------------
+if nmcli -t -f NAME connection show | grep -Fxq "$ssid"; then
+    nmcli connection up id "$ssid" >/dev/null 2>&1 \
+        && notify "Connected" "$ssid" || notify "Connection failed" "$ssid"
+    exit $?
+fi
+
+# --- new network: ask for a password if it's secured -------------------------
+secured="$(nmcli -t -f SSID,SECURITY device wifi \
+    | awk -F: -v s="$ssid" '$1==s { print $2; exit }')"
+
+if [ -n "$secured" ] && [ "$secured" != "--" ]; then
+    pass="$(printf '' | rofi -dmenu -password -theme "$THEME" -p "Password" -lines 0)"
+    [ -z "$pass" ] && exit 0
+    nmcli device wifi connect "$ssid" password "$pass" >/dev/null 2>&1 \
+        && notify "Connected" "$ssid" || notify "Wrong password?" "$ssid"
+else
+    nmcli device wifi connect "$ssid" >/dev/null 2>&1 \
+        && notify "Connected" "$ssid" || notify "Connection failed" "$ssid"
+fi

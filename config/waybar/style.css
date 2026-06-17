@@ -34,7 +34,6 @@ window#waybar {
 #bluetooth,
 #pulseaudio,
 #tray,
-#custom-launcher,
 #custom-media,
 #custom-updates,
 #custom-notifications,
@@ -56,19 +55,12 @@ window#waybar {
 #custom-media:hover,
 #custom-updates:hover,
 #custom-notifications:hover,
-#custom-launcher:hover,
 #custom-theme:hover {
     background: alpha(@surface2, 0.55);
     border-radius: 11px;
 }
 
 /* --- left ----------------------------------------------------------------- */
-#custom-launcher {
-    color: @accent;
-    font-size: 16px;
-    padding: 0 11px;
-}
-
 #workspaces { padding: 0 2px; }
 #workspaces button {
     color: @muted;

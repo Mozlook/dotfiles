@@ -7,7 +7,7 @@
     "margin-right": 12,
     "spacing": 0,
     "modules-left": [
-        "custom/launcher",
+        "custom/power",
         "hyprland/workspaces",
         "hyprland/window"
     ],
@@ -24,14 +24,8 @@
         "battery",
         "custom/notifications",
         "tray",
-        "custom/theme",
-        "custom/power"
+        "custom/theme"
     ],
-    "custom/launcher": {
-        "format": "",
-        "tooltip": false,
-        "on-click": "rofi -show drun"
-    },
     "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate",
@@ -112,7 +106,7 @@
         "format-disconnected": "",
         "tooltip-format": "{ifname}  {ipaddr}",
         "tooltip-format-wifi": "{essid}  ({signalStrength}%)\n{ifname}  {ipaddr}",
-        "on-click": "kitty -e nmtui"
+        "on-click": "~/.local/bin/network-menu"
     },
     "bluetooth": {
         "format": "",
