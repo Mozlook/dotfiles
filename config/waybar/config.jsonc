@@ -108,7 +108,7 @@
     },
     "network": {
         "format-wifi": " {signalStrength}%",
-        "format-ethernet": "",
+        "format-ethernet": "",
         "format-disconnected": "",
         "tooltip-format": "{ifname}  {ipaddr}",
         "tooltip-format-wifi": "{essid}  ({signalStrength}%)\n{ifname}  {ipaddr}",
@@ -163,7 +163,7 @@
         "spacing": 10
     },
     "custom/theme": {
-        "format": "",
+        "format": "",
         "tooltip": false,
         "on-click": "~/.local/bin/wallpaper-picker"
     },
