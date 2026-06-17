@@ -5,7 +5,7 @@
     "margin-top": 8,
     "margin-left": 12,
     "margin-right": 12,
-    "spacing": 6,
+    "spacing": 0,
     "modules-left": [
         "custom/launcher",
         "hyprland/workspaces",
@@ -16,15 +16,12 @@
     ],
     "modules-right": [
         "custom/media",
-        "idle_inhibitor",
         "custom/updates",
         "backlight",
         "pulseaudio",
         "network",
         "bluetooth",
         "battery",
-        "cpu",
-        "memory",
         "custom/notifications",
         "tray",
         "custom/theme",
@@ -80,15 +77,6 @@
         "on-scroll-up": "playerctl next",
         "on-scroll-down": "playerctl previous",
         "tooltip": false
-    },
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        },
-        "tooltip-format-activated": "Caffeine on (won't sleep)",
-        "tooltip-format-deactivated": "Caffeine off"
     },
     "custom/updates": {
         "format": " {}",
@@ -149,17 +137,6 @@
             ""
         ],
         "tooltip-format": "{timeTo}"
-    },
-    "cpu": {
-        "format": " {usage}%",
-        "interval": 3,
-        "on-click": "kitty -e btop"
-    },
-    "memory": {
-        "format": " {percentage}%",
-        "interval": 3,
-        "tooltip-format": "{used:0.1f} / {total:0.1f} GiB",
-        "on-click": "kitty -e btop"
     },
     "custom/notifications": {
         "tooltip": false,

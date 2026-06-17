@@ -2,7 +2,7 @@
 @import "colors.css";
 
 * {
-    font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free";
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", "Font Awesome 6 Free";
     font-size: 13px;
     font-weight: 600;
     min-height: 0;
@@ -13,27 +13,26 @@ window#waybar {
     color: @fg;
 }
 
-/* groups are just spacers — each module is its own floating capsule */
+/* --- each section is ONE grouped pill ------------------------------------ */
 .modules-left,
 .modules-center,
 .modules-right {
-    background: transparent;
-    border: none;
-    padding: 0;
+    background: alpha(@bg, 0.82);
+    border: 1px solid alpha(@surface2, 0.45);
+    border-radius: 16px;
+    padding: 0 6px;
+    margin: 4px 0;
 }
 
-/* --- the floating capsule shared by every module ------------------------- */
+/* modules inside the pill are flat — just padded click-targets */
 #workspaces,
 #window,
 #clock,
-#cpu,
-#memory,
 #backlight,
 #battery,
 #network,
 #bluetooth,
 #pulseaudio,
-#idle_inhibitor,
 #tray,
 #custom-launcher,
 #custom-media,
@@ -41,39 +40,43 @@ window#waybar {
 #custom-notifications,
 #custom-theme,
 #custom-power {
-    background: alpha(@bg, 0.82);
-    border: 1px solid alpha(@surface2, 0.50);
-    border-radius: 15px;
-    padding: 0 13px;
-    margin: 5px 3px;
+    background: transparent;
+    border: none;
+    padding: 0 9px;
+    margin: 0;
 }
 
-/* icon-only modules -> tighter, rounder capsules */
-#custom-launcher,
-#custom-theme,
-#custom-power,
-#custom-notifications,
-#idle_inhibitor,
-#bluetooth {
-    padding: 0 11px;
-    border-radius: 16px;
+/* hover highlight that stays inside the pill */
+#clock:hover,
+#network:hover,
+#bluetooth:hover,
+#pulseaudio:hover,
+#backlight:hover,
+#battery:hover,
+#custom-media:hover,
+#custom-updates:hover,
+#custom-notifications:hover,
+#custom-launcher:hover,
+#custom-theme:hover {
+    background: alpha(@surface2, 0.55);
+    border-radius: 11px;
 }
 
 /* --- left ----------------------------------------------------------------- */
 #custom-launcher {
     color: @accent;
-    font-size: 17px;
+    font-size: 16px;
+    padding: 0 11px;
 }
-#custom-launcher:hover { color: @accent2; }
 
-#workspaces { padding: 0 4px; }
+#workspaces { padding: 0 2px; }
 #workspaces button {
     color: @muted;
     padding: 0 7px;
     margin: 4px 2px;
-    border-radius: 11px;
+    border-radius: 10px;
     font-weight: 700;
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
 }
 #workspaces button:hover {
     color: @fg;
@@ -91,55 +94,48 @@ window#waybar {
 #window {
     color: @muted;
     font-weight: 500;
-    background: transparent;
-    border: none;
 }
 
 /* --- center --------------------------------------------------------------- */
 #clock {
     color: @accent2;
     font-weight: 700;
-    padding: 0 16px;
+    padding: 0 14px;
 }
 
-/* --- right ---------------------------------------------------------------- */
-#custom-media      { color: @ok; }
-#idle_inhibitor    { color: @muted; }
-#idle_inhibitor.activated { color: @accent2; }
-#custom-updates    { color: @warn; }
-#backlight         { color: @accent2; }
-#pulseaudio        { color: @accent2; }
-#pulseaudio.muted  { color: @muted; }
-#network           { color: @info; }
+/* --- right (module text colors) ------------------------------------------- */
+#custom-media         { color: @ok; }
+#custom-updates       { color: @warn; }
+#backlight            { color: @accent2; }
+#pulseaudio           { color: @accent2; }
+#pulseaudio.muted     { color: @muted; }
+#network              { color: @info; }
 #network.disconnected { color: @error; }
-#bluetooth         { color: @accent; }
-#bluetooth.disabled { color: @muted; }
-#battery           { color: @ok; }
-#battery.charging  { color: @ok; }
-#battery.warning   { color: @warn; }
-#battery.critical  { color: @error; }
-#cpu               { color: @info; }
-#memory            { color: @accent; }
+#bluetooth            { color: @accent; }
+#bluetooth.disabled   { color: @muted; }
+#battery              { color: @ok; }
+#battery.charging     { color: @ok; }
+#battery.warning      { color: @warn; }
+#battery.critical     { color: @error; }
 #custom-notifications { color: @accent2; }
-#tray              { padding: 0 10px; }
+#tray                 { padding: 0 8px; }
 
 #custom-theme {
     color: @accent2;
     font-size: 15px;
+    padding: 0 11px;
 }
 #custom-theme:hover { color: @accent; }
 
 #custom-power {
     color: @error;
     font-size: 15px;
+    padding: 0 11px;
 }
-#custom-power:hover { background: @error; color: @bg; }
-
-/* hover lift for stat modules */
-#clock:hover, #cpu:hover, #memory:hover, #network:hover, #bluetooth:hover,
-#pulseaudio:hover, #backlight:hover, #battery:hover, #custom-media:hover,
-#custom-updates:hover, #custom-notifications:hover, #idle_inhibitor:hover {
-    background: alpha(@surface2, 0.55);
+#custom-power:hover {
+    background: @error;
+    color: @bg;
+    border-radius: 11px;
 }
 
 @keyframes blink {

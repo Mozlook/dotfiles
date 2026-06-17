@@ -68,6 +68,7 @@ wget
 
 # --- fonts ---
 ttf-jetbrains-mono-nerd
+ttf-nerd-fonts-symbols
 noto-fonts
 noto-fonts-emoji
 ttf-font-awesome
