@@ -69,6 +69,7 @@ return {
     dependencies = {
       { "williamboman/mason.nvim", build = ":MasonUpdate", opts = {} },
       { "williamboman/mason-lspconfig.nvim" },
+      { "WhoIsSethDaniel/mason-tool-installer.nvim" },
       { "j-hui/fidget.nvim", tag = "v1.5.0", opts = {} },
       { "hrsh7th/cmp-nvim-lsp" },
       { "nvim-lua/plenary.nvim" },

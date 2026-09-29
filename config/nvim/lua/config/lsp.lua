@@ -2,6 +2,19 @@ pcall(require, "lspconfig")
 
 require("mason").setup({ PATH = "append" })
 
+-- Auto-install the formatters used by conform.lua (Mason only handles LSPs).
+require("mason-tool-installer").setup({
+  ensure_installed = {
+    "prettier",
+    "black",
+    "gofumpt",
+    "goimports",
+    "csharpier",
+    "stylua",
+  },
+  run_on_start = true,
+})
+
 require("mason-lspconfig").setup({
   ensure_installed = {
     "ts_ls",

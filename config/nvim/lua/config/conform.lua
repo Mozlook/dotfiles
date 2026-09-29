@@ -4,7 +4,7 @@ require("conform").setup({
     if disabled[vim.bo[bufnr].filetype] then
       return
     end
-    return { timeout_ms = 2000, lsp_fallback = true }
+    return { timeout_ms = 2000, lsp_format = "fallback" }
   end,
   formatters_by_ft = {
     javascript = { "prettier" },

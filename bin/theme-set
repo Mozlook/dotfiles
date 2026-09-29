@@ -55,6 +55,7 @@ render kitty-theme.conf    "$CONF/kitty/theme.conf"
 render rofi-colors.rasi    "$CONF/rofi/colors.rasi"
 render swaync-colors.css   "$CONF/swaync/colors.css"
 render hypr-colors.conf    "$CONF/hypr/colors.conf"
+render hypr-colors.lua     "$CONF/hypr/colors.lua"
 render starship.toml       "$CONF/starship.toml"
 render nvim-palette.lua    "$CONF/nvim/lua/config/palette.lua"
 

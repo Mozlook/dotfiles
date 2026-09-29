@@ -8,6 +8,7 @@ o.relativenumber = true
 o.mouse = "a"
 o.clipboard = "unnamedplus"
 o.swapfile = false
+o.undofile = true
 o.termguicolors = true
 o.signcolumn = "yes"
 o.updatetime = 250
