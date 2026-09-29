@@ -64,6 +64,7 @@ atuin
 stow
 git
 unzip
+pciutils   # lspci — install.sh uses it to detect NVIDIA GPUs
 wget
 
 # --- fonts ---
@@ -88,9 +89,9 @@ npm
 # nvim-treesitter (main branch) builds parsers with the `tree-sitter` CLI
 tree-sitter-cli
 
-# --- theming generator (extracts a 16-color palette from a wallpaper) ---
+# --- theming generator (palette from a wallpaper: matugen -> render.py) ---
 python
-python-pywal
+matugen
 
 # --- apps ---
 firefox

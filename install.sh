@@ -95,7 +95,8 @@ for s in "$DOTS"/bin/*; do ln -sf "$s" "$HOME/.local/bin/$(basename "$s")"; done
 # --- 9. default shell --------------------------------------------------------
 if [ "${SHELL:-}" != "/usr/bin/zsh" ]; then
   info "Setting zsh as default shell…"
-  chsh -s /usr/bin/zsh || warn "chsh failed; run 'chsh -s /usr/bin/zsh' manually."
+  # via sudo (still cached from above) so chsh doesn't prompt for the password again
+  sudo chsh -s /usr/bin/zsh "$(id -un)" || warn "chsh failed; run 'chsh -s /usr/bin/zsh' manually."
 fi
 
 # --- 10. services ------------------------------------------------------------

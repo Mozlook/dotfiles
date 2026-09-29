@@ -1,7 +1,6 @@
 # AUR packages — installed with: yay -S --needed - < packages/aur.txt
 # Comments and blank lines are stripped by install.sh.
 
-matugen-bin
 # `swww` resolves to the maintained drop-in fork `awww` on current AUR;
 # theme-set auto-detects whichever of swww/awww is installed.
 swww

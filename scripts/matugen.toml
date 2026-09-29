@@ -1,0 +1,16 @@
+# matugen config used by bin/theme-gen (passed with -c, so ~/.config/matugen
+# is never read). No templates: matugen only emits JSON, render.py does the rest.
+#
+# Material You gives tonal roles around one source color; these fixed hues are
+# blended toward it so terminal/semantic colors stay distinct but match.
+[config]
+
+[config.custom_colors]
+red     = { color = "#E05A5A", blend = true }
+green   = { color = "#6FB36F", blend = true }
+yellow  = { color = "#E0B84A", blend = true }
+blue    = { color = "#5B8FD6", blend = true }
+magenta = { color = "#C27BB8", blend = true }
+cyan    = { color = "#4FB3B3", blend = true }
+
+[templates]
