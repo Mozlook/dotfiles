@@ -1,7 +1,6 @@
 # AUR packages — installed with: yay -S --needed - < packages/aur.txt
 # Comments and blank lines are stripped by install.sh.
 
-wlogout
 bibata-cursor-theme-bin
 sddm-astronaut-theme
 brave-bin

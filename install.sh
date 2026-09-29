@@ -26,13 +26,11 @@ read_pkglist "$DOTS/packages/pacman.txt" | sudo pacman -S --needed --noconfirm -
 
 # --- 4. GPU-specific ---------------------------------------------------------
 if has_nvidia; then
-  warn "NVIDIA GPU detected — installing drivers + writing env.conf/env.lua"
+  warn "NVIDIA GPU detected — installing drivers + writing env.lua"
   read_pkglist "$DOTS/packages/nvidia.txt" | sudo pacman -S --needed --noconfirm -
-  cp "$DOTS/config/hypr/env.nvidia.conf" "$DOTS/config/hypr/env.conf"
-  cp "$DOTS/config/hypr/env.nvidia.lua"  "$DOTS/config/hypr/env.lua"
+  cp "$DOTS/config/hypr/env.nvidia.lua" "$DOTS/config/hypr/env.lua"
 else
-  : > "$DOTS/config/hypr/env.conf"   # empty env on non-NVIDIA hosts
-  : > "$DOTS/config/hypr/env.lua"
+  : > "$DOTS/config/hypr/env.lua"   # empty env on non-NVIDIA hosts
 fi
 
 # --- 5. AUR packages ---------------------------------------------------------
@@ -40,30 +38,22 @@ info "Installing AUR packages…"
 read_pkglist "$DOTS/packages/aur.txt" | yay -S --needed --noconfirm -
 
 # --- 6. per-host monitor config ---------------------------------------------
-# monitors.conf (legacy hyprlang) + monitors.lua (Hyprland 0.55+). Both gitignored.
+# monitors.lua is gitignored and never overwritten once it exists.
 if [ ! -f "$DOTS/config/hypr/monitors.lua" ]; then
   if command -v hyprctl >/dev/null && hyprctl monitors >/dev/null 2>&1; then
     info "Generating per-host monitor layout (preferred mode, auto)…"
-    hyprctl monitors -j | python3 - "$DOTS/config/hypr" <<'PY' || true
-import json, os, sys
-d = sys.argv[1]
-mons = json.load(sys.stdin); x = 0; conf = []; lua = []
+    hyprctl monitors -j | python3 - "$DOTS/config/hypr/monitors.lua" <<'PY' || true
+import json, sys
+mons = json.load(sys.stdin); x = 0; lua = []
 for m in mons:
-    name = m["name"]
-    conf.append(f"monitor={name},preferred,{x}x0,1")
-    lua.append(f'hl.monitor({{ output = "{name}", mode = "preferred", position = "{x}x0", scale = 1 }})')
+    lua.append(f'hl.monitor({{ output = "{m["name"]}", mode = "preferred", position = "{x}x0", scale = 1 }})')
     x += m.get("width", 1920)
-# don't clobber a hand-edited monitors.conf
-if not os.path.exists(f"{d}/monitors.conf"):
-    open(f"{d}/monitors.conf", "w").write("\n".join(conf) + "\n")
-open(f"{d}/monitors.lua", "w").write("\n".join(lua) + "\n")
+open(sys.argv[1], "w").write("\n".join(lua) + "\n")
 PY
   else
     warn "Hyprland not running yet — using fallback monitor layout (edit after first login)."
   fi
-  # ensure both files exist (fallbacks if auto-detect was skipped or failed)
-  [ -f "$DOTS/config/hypr/monitors.conf" ] || cp "$DOTS/config/hypr/monitors.example.conf" "$DOTS/config/hypr/monitors.conf"
-  [ -f "$DOTS/config/hypr/monitors.lua" ]  || cp "$DOTS/config/hypr/monitors.example.lua"  "$DOTS/config/hypr/monitors.lua"
+  [ -f "$DOTS/config/hypr/monitors.lua" ] || cp "$DOTS/config/hypr/monitors.example.lua" "$DOTS/config/hypr/monitors.lua"
 fi
 
 # --- 7. symlink dotfiles -----------------------------------------------------
@@ -161,5 +151,5 @@ info "Rendering default theme (cafe)…"
 "$HOME/.local/bin/theme-set" --render-only cafe || warn "theme-set will run on first Hyprland login instead."
 
 ok "Done. Reboot -> SDDM -> Hyprland."
-echo "   Monitor layout: $DOTS/config/hypr/monitors.conf (per-host, gitignored)."
+echo "   Monitor layout: $DOTS/config/hypr/monitors.lua (per-host, gitignored)."
 echo "   Change themes anytime with SUPER+T."

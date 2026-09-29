@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# power-menu — rofi session menu: lock, logout, suspend, reboot, shutdown.
+# Bound to SUPER+SHIFT+E and the waybar power button. Logout, reboot and
+# shutdown ask for confirmation. Matches the dotfiles rofi theme.
+set -uo pipefail
+
+THEME="$HOME/.config/rofi/power.rasi"
+LOCK=$''       # nf-fa-lock
+LOGOUT=$''     # nf-fa-right_from_bracket
+SUSPEND=$''    # nf-fa-moon
+REBOOT=$''     # nf-fa-rotate_right
+SHUTDOWN=$''   # nf-fa-power_off
+
+rofi_menu() { rofi -dmenu -i -theme "$THEME" "$@"; }
+
+confirm() {
+    [ "$(printf 'Yes\nNo' | rofi_menu -p "$1?")" = "Yes" ]
+}
+
+sel="$(printf '%s\n' \
+    "$LOCK  Lock" \
+    "$LOGOUT  Logout" \
+    "$SUSPEND  Suspend" \
+    "$REBOOT  Reboot" \
+    "$SHUTDOWN  Shutdown" | rofi_menu -p "Power")"
+
+case "$sel" in
+    *Lock)     loginctl lock-session ;;   # hypridle runs hyprlock
+    *Logout)   confirm "Logout"   && hyprctl dispatch exit ;;
+    *Suspend)  systemctl suspend ;;       # hypridle locks before sleep
+    *Reboot)   confirm "Reboot"   && systemctl reboot ;;
+    *Shutdown) confirm "Shutdown" && systemctl poweroff ;;
+esac
