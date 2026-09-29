@@ -1,11 +1,7 @@
 # AUR packages — installed with: yay -S --needed - < packages/aur.txt
 # Comments and blank lines are stripped by install.sh.
 
-# `swww` resolves to the maintained drop-in fork `awww` on current AUR;
-# theme-set auto-detects whichever of swww/awww is installed.
-swww
 wlogout
-bibata-cursor-theme
+bibata-cursor-theme-bin
 sddm-astronaut-theme
 brave-bin
-obsidian

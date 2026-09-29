@@ -13,16 +13,15 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors ''
 
-# --- plugins (installed via pacman) -----------------------------------------
-src() { [ -f "$1" ] && source "$1"; }
-src /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-src /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
-
 # --- keybinds ----------------------------------------------------------------
+# Up/Down: search history for lines starting with what's already typed
+# (cursor goes to end of line). Ctrl-R: fuzzy history search (fzf, below).
 bindkey -e
-bindkey '^[[A' history-search-backward
-bindkey '^[[B' history-search-forward
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+for key in '^[[A' '^[OA'; do bindkey "$key" up-line-or-beginning-search; done
+for key in '^[[B' '^[OB'; do bindkey "$key" down-line-or-beginning-search; done
 
 # --- aliases -----------------------------------------------------------------
 alias ls='eza --icons --group-directories-first'
@@ -38,12 +37,21 @@ alias ff='fastfetch'
 # --- tools -------------------------------------------------------------------
 command -v starship >/dev/null && eval "$(starship init zsh)"
 command -v zoxide   >/dev/null && eval "$(zoxide init zsh)"
-command -v atuin    >/dev/null && eval "$(atuin init zsh)"
 [ -f /usr/share/fzf/key-bindings.zsh ] && source /usr/share/fzf/key-bindings.zsh
 [ -f /usr/share/fzf/completion.zsh ] && source /usr/share/fzf/completion.zsh
 
-# clear the screen and re-show fastfetch (Ctrl-L still does a plain clear)
-clear() { command clear; command -v fastfetch >/dev/null && fastfetch; }
+# --- greeting ----------------------------------------------------------------
+# fastfetch only in a fresh kitty window — not in nvim's :terminal/toggleterm
+# ($NVIM) or VS Code's terminal, which inherit KITTY_WINDOW_ID when launched from kitty.
+if [[ -n $KITTY_WINDOW_ID && -z $NVIM && $TERM_PROGRAM != vscode ]] && command -v fastfetch >/dev/null; then
+  # clear re-shows fastfetch here (Ctrl-L still does a plain clear)
+  clear() { command clear; fastfetch; }
+  fastfetch
+fi
 
-# greeting
-command -v fastfetch >/dev/null && fastfetch
+# --- plugins (installed via pacman) -----------------------------------------
+# Last on purpose: zsh-syntax-highlighting must wrap every widget defined above.
+src() { [ -f "$1" ] && source "$1"; }
+src /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
+src /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

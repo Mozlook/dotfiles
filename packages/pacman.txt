@@ -1,6 +1,22 @@
 # Official repo packages — installed with: pacman -S --needed - < packages/pacman.txt
 # Comments and blank lines are stripped by install.sh.
 
+# --- base system ---
+base-devel
+git
+stow
+openssh
+man-db
+man-pages
+less
+rsync
+wget
+unzip
+zip
+7zip
+pciutils   # lspci — install.sh uses it to detect NVIDIA GPUs
+xdg-user-dirs   # ~/Pictures, ~/Downloads, … (screenshots go to ~/Pictures)
+
 # --- shell ---
 zsh
 zsh-autosuggestions
@@ -10,20 +26,23 @@ starship
 # --- hyprland + session ---
 hyprland
 xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk   # file chooser ("Open file…") — the hyprland portal has none
 hyprlock
 hypridle
 hyprpolkitagent
+gnome-keyring   # secret service: browser/git/VS Code passwords
+libsecret
 qt5-wayland
 qt6-wayland
 
 # --- bar / launcher / notifications ---
 waybar
-rofi-wayland
+rofi
 swaync
 pacman-contrib   # provides `checkupdates` for the waybar updates module
 
 # --- wayland desktop glue ---
-# NOTE: swww lives in the AUR (see packages/aur.txt), not in extra.
+awww   # wallpaper daemon (drop-in fork of swww); theme-set detects either
 cliphist
 wl-clipboard
 grim
@@ -41,7 +60,7 @@ wireplumber
 
 # --- network / bluetooth ---
 networkmanager
-network-manager-applet
+network-manager-applet   # provides nm-connection-editor (used by network-menu)
 bluez
 bluez-utils
 blueman
@@ -60,40 +79,46 @@ fd
 ripgrep
 fzf
 zoxide
-atuin
-stow
-git
-unzip
-pciutils   # lspci — install.sh uses it to detect NVIDIA GPUs
-wget
+jq
+
+# --- development ---
+lazygit
+git-delta
+github-cli
+docker
+docker-compose
+docker-buildx
+# language toolchains (Mason also needs go + dotnet to install gopls, gofumpt,
+# goimports, csharpier and omnisharp)
+go
+dotnet-sdk
+nodejs
+npm
+typescript   # global tsserver for typescript-tools outside a project
+python
+uv
+gcc
+make
+# nvim-treesitter (main branch) builds parsers with the `tree-sitter` CLI
+tree-sitter-cli
 
 # --- fonts ---
 ttf-jetbrains-mono-nerd
 ttf-nerd-fonts-symbols
 noto-fonts
 noto-fonts-emoji
-ttf-font-awesome
+woff2-font-awesome
 
 # --- look & feel ---
-nwg-look
-qt5ct
-qt6ct
-kvantum
 papirus-icon-theme
-
-# --- editor/build deps for nvim LSP/treesitter ---
-gcc
-make
-nodejs
-npm
-# nvim-treesitter (main branch) builds parsers with the `tree-sitter` CLI
-tree-sitter-cli
+gnome-themes-extra   # Adwaita-dark for GTK3 apps (set via gsettings in install.sh)
+dconf                # gsettings backend
 
 # --- theming generator (palette from a wallpaper: matugen -> render.py) ---
-python
 matugen
 
 # --- apps ---
 firefox
 nautilus
 discord
+obsidian

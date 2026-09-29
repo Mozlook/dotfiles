@@ -92,6 +92,20 @@ stow_pkg home   "$HOME"
 # --- 8. theme tooling on PATH ------------------------------------------------
 for s in "$DOTS"/bin/*; do ln -sf "$s" "$HOME/.local/bin/$(basename "$s")"; done
 
+# --- 8b. user dirs + wallpapers ----------------------------------------------
+xdg-user-dirs-update || true   # ~/Pictures (screenshots), ~/Downloads, …
+# ~/Wallpapers -> repo/wallpapers: drop images there, SUPER+T "＋ Add wallpaper…"
+# turns them into themes. Never touch a real, non-empty ~/Wallpapers.
+mkdir -p "$DOTS/wallpapers"
+wp_link="$HOME/Wallpapers"
+if [ -L "$wp_link" ] || [ ! -e "$wp_link" ]; then
+  ln -sfn "$DOTS/wallpapers" "$wp_link"
+elif [ -d "$wp_link" ] && [ -z "$(ls -A "$wp_link")" ]; then
+  rmdir "$wp_link" && ln -s "$DOTS/wallpapers" "$wp_link"
+else
+  warn "$wp_link already exists — move its images to $DOTS/wallpapers and re-run to link it."
+fi
+
 # --- 9. default shell --------------------------------------------------------
 if [ "${SHELL:-}" != "/usr/bin/zsh" ]; then
   info "Setting zsh as default shell…"
@@ -120,12 +134,28 @@ fi
 enable_system_service sddm.service
 enable_system_service NetworkManager.service
 enable_system_service bluetooth.service
+# docker: socket-activated (daemon starts on first use); group = no sudo for
+# `docker` — takes effect after the next login.
+enable_system_service docker.socket
+id -nG "$(id -un)" | grep -qw docker || sudo usermod -aG docker "$(id -un)"
 systemctl --user daemon-reload 2>/dev/null || true
 enable_user_service pipewire.service        || true
 enable_user_service wireplumber.service     || true
 enable_user_service pipewire-pulse.service  || true
 
-# --- 11. fonts + first theme -------------------------------------------------
+# --- 11. look & feel: dark GTK/libadwaita, cursor, icons ---------------------
+# Browsers, Electron apps and the file chooser follow color-scheme via the portal.
+# dbus-run-session: the installer usually runs without a desktop session bus.
+info "Setting dark GTK theme, cursor and icons…"
+dbus-run-session -- sh -c '
+  gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+  gsettings set org.gnome.desktop.interface gtk-theme    "Adwaita-dark"
+  gsettings set org.gnome.desktop.interface icon-theme   "Papirus-Dark"
+  gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Ice"
+  gsettings set org.gnome.desktop.interface cursor-size  24
+' || warn "gsettings failed — GTK apps may stay light."
+
+# --- 12. fonts + first theme -------------------------------------------------
 fc-cache -f >/dev/null 2>&1 || true
 info "Rendering default theme (cafe)…"
 "$HOME/.local/bin/theme-set" --render-only cafe || warn "theme-set will run on first Hyprland login instead."

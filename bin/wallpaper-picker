@@ -37,11 +37,11 @@ choice="$(menu | rofi -dmenu -show-icons -p "Theme" \
 
 # --- import flow -------------------------------------------------------------
 if [ "$choice" = "$ADD" ]; then
-  mapfile -t imgs < <(find "$HOME/Pictures" "$HOME/Wallpapers" \
-       "$HOME/.local/share/wallpapers" -type f \
+  # ~/Wallpapers is a symlink to $DOTS/wallpapers (install.sh); -L follows it.
+  mapfile -t imgs < <(find -L "$HOME/Wallpapers" -type f \
        \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) \
        2>/dev/null | sort)
-  [ "${#imgs[@]}" -gt 0 ] || { notify-send "Wallpapers" "No images found in ~/Pictures, ~/Wallpapers." 2>/dev/null; exit 0; }
+  [ "${#imgs[@]}" -gt 0 ] || { notify-send "Wallpapers" "No images in ~/Wallpapers — drop some there first." 2>/dev/null; exit 0; }
 
   pick="$(for f in "${imgs[@]}"; do printf '%s\0icon\x1f%s\n' "$(basename "$f")" "$f"; done \
           | rofi -dmenu -show-icons -p "Import" ${ROFI_THEME:+-theme "$ROFI_THEME"} 2>/dev/null)" || exit 0
@@ -53,7 +53,14 @@ if [ "$choice" = "$ADD" ]; then
   name="${pick%.*}"; name="$(echo "$name" | tr ' ' '-' | tr -cd '[:alnum:]-_')"
   ext="${src##*.}"
   mkdir -p "$THEMES/$name"
-  cp -f "$src" "$THEMES/$name/wallpaper.$ext"
+  rm -f "$THEMES/$name"/wallpaper.*
+  real="$(readlink -f "$src")"
+  if [ "${real#"$DOTS/wallpapers/"}" != "$real" ]; then
+    # image lives in the repo: relative symlink, so git stores it only once
+    ln -s "../../wallpapers/${real#"$DOTS/wallpapers/"}" "$THEMES/$name/wallpaper.$ext"
+  else
+    cp -f "$src" "$THEMES/$name/wallpaper.$ext"
+  fi
   rm -f "$THEMES/$name/palette.json"   # force fresh generation
   notify-send "Theme" "Generating palette for '$name'…" 2>/dev/null || true
   exec "$THEME_SET" "$name"
