@@ -25,13 +25,36 @@ info "Installing official packages…"
 read_pkglist "$DOTS/packages/pacman.txt" | sudo pacman -S --needed --noconfirm -
 
 # --- 4. GPU-specific ---------------------------------------------------------
-if has_nvidia; then
-  warn "NVIDIA GPU detected — installing drivers + writing env.lua"
-  read_pkglist "$DOTS/packages/nvidia.txt" | sudo pacman -S --needed --noconfirm -
-  cp "$DOTS/config/hypr/env.nvidia.lua" "$DOTS/config/hypr/env.lua"
-else
-  : > "$DOTS/config/hypr/env.lua"   # empty env on non-NVIDIA hosts
-fi
+# The driver branch depends on the GPU generation (see nvidia_branch in lib.sh).
+# dkms modules need headers for every installed kernel. No lib32 packages:
+# they live in [multilib], which this installer doesn't enable.
+branch="$(has_nvidia && nvidia_branch || echo none)"
+case "$branch" in
+  open|580xx)
+    warn "NVIDIA GPU detected — installing the '$branch' driver + writing env.lua"
+    # kms hook would pack nouveau into the initramfs and grab the GPU before nvidia
+    regen_initramfs=0
+    if grep -qE '^HOOKS=.*\bkms\b' /etc/mkinitcpio.conf; then
+      sudo sed -i -E '/^HOOKS=/ s/[[:space:]]kms\b//' /etc/mkinitcpio.conf
+      regen_initramfs=1
+    fi
+    { kernel_headers; read_pkglist "$DOTS/packages/nvidia.txt"; } | sudo pacman -S --needed --noconfirm -
+    if [ "$branch" = open ]; then
+      sudo pacman -S --needed --noconfirm nvidia-open-dkms nvidia-utils
+    else
+      yay -S --needed --noconfirm nvidia-580xx-dkms nvidia-580xx-utils
+    fi
+    [ "$regen_initramfs" = 0 ] || sudo mkinitcpio -P
+    cp "$DOTS/config/hypr/env.nvidia.lua" "$DOTS/config/hypr/env.lua"
+    ;;
+  legacy)
+    warn "NVIDIA GPU too old for current drivers (Kepler or older) — staying on nouveau"
+    : > "$DOTS/config/hypr/env.lua"
+    ;;
+  *)
+    : > "$DOTS/config/hypr/env.lua"   # empty env on non-NVIDIA hosts
+    ;;
+esac
 
 # --- 5. AUR packages ---------------------------------------------------------
 info "Installing AUR packages…"

@@ -1,6 +1,5 @@
 # NVIDIA packages — installed only when install.sh detects an NVIDIA GPU.
-nvidia-dkms
-nvidia-utils
-lib32-nvidia-utils
+# The driver itself (nvidia-open-dkms or AUR nvidia-580xx-dkms) and the kernel
+# headers are picked by install.sh from the GPU generation.
 egl-wayland
 libva-nvidia-driver
