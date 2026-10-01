@@ -26,7 +26,7 @@ sel="$(printf '%s\n' \
 
 case "$sel" in
     *Lock)     loginctl lock-session ;;   # hypridle runs hyprlock
-    *Logout)   confirm "Logout"   && hyprctl dispatch exit ;;
+    *Logout)   confirm "Logout"   && hyprctl dispatch 'hl.dsp.exit()' ;;
     *Suspend)  systemctl suspend ;;       # hypridle locks before sleep
     *Reboot)   confirm "Reboot"   && systemctl reboot ;;
     *Shutdown) confirm "Shutdown" && systemctl poweroff ;;
