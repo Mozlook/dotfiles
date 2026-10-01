@@ -104,7 +104,8 @@ tree-sitter-cli
 
 # --- fonts ---
 ttf-jetbrains-mono-nerd
-otf-geist-mono-nerd       # mechabar waybar style
+otf-geist-mono-nerd       # waybar styles
+ttf-material-symbols-variable   # waybar icons (Material Symbols Rounded)
 ttf-nerd-fonts-symbols
 noto-fonts
 noto-fonts-emoji

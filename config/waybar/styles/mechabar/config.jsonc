@@ -73,40 +73,13 @@
         "rewrite": { "": "Desktop" }
     },
     "custom/updates": {
-        "format": "󰏗 {}",
         "exec-if": "true"
     },
     "network": {
-        "format-wifi": "{icon}",
-        "format-ethernet": "󰈀",
-        "format-disconnected": "󰤯",
-        "format-icons": ["󰤟", "󰤢", "󰤥", "󰤨"]
+        "format-wifi": "{icon}"
     },
     "bluetooth": {
-        "format": "󰂯",
-        "format-disabled": "󰂲",
-        "format-off": "󰂲",
-        "format-connected": "󰂱"
-    },
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": "󰝟 {volume}%",
-        "format-icons": { "default": ["󰕿", "󰖀", "󰕾"], "headphone": "󰋋" }
-    },
-    "backlight": {
-        "format": "󰃠 {percent}%"
-    },
-    "battery": {
-        "format": "{icon} {capacity}%",
-        "format-charging": "󰉁 {capacity}%",
-        "format-plugged": "󰚥 {capacity}%",
-        "format-icons": ["󰂎", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
-    },
-    "custom/theme": {
-        "format": "󰏘"
-    },
-    "custom/power": {
-        "format": "󰤄"
+        "format-connected": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>"
     },
 
     // --- segment dividers (powerline glyphs) ---------------------------------

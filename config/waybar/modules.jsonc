@@ -1,6 +1,8 @@
 // Shared module definitions — included by every bar style (styles/*/config.jsonc).
 // A style can override any field by defining the same module key again; its own
 // values win and the rest is inherited from here.
+// Icons: Material Symbols Rounded, filled (ttf-material-symbols-variable), wrapped in a
+// Pango span — the glyphs share codepoints with Nerd Font icons, so the font must be explicit.
 {
     "hyprland/workspaces": {
         "format": "{icon}",
@@ -26,8 +28,8 @@
         }
     },
     "clock": {
-        "format": " {:%H:%M}",
-        "format-alt": " {:%a, %d %b}",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {:%H:%M}",
+        "format-alt": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {:%a, %d %b}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {
             "mode": "month",
@@ -38,7 +40,7 @@
         }
     },
     "custom/media": {
-        "format": " {}",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {}",
         "max-length": 38,
         "interval": 2,
         "exec": "playerctl metadata --format '{{title}} — {{artist}}' 2>/dev/null",
@@ -49,7 +51,7 @@
         "tooltip": false
     },
     "custom/updates": {
-        "format": " {}",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {}",
         "interval": 3600,
         "exec": "checkupdates 2>/dev/null | wc -l",
         "exec-if": "[ $(checkupdates 2>/dev/null | wc -l) -gt 0 ]",
@@ -57,39 +59,47 @@
         "tooltip-format": "Pending updates — click to upgrade"
     },
     "backlight": {
-        "format": " {percent}%",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {percent}%",
         "on-scroll-up": "brightnessctl set 5%+",
         "on-scroll-down": "brightnessctl set 5%-",
         "tooltip": false
     },
     "pulseaudio": {
         "format": "{icon} {volume}%",
-        "format-muted": " muted",
+        "format-muted": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {volume}%",
         "format-icons": {
             "default": [
-                "",
-                "",
-                ""
-            ]
+                "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+                "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+                "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>"
+            ],
+            "headphone": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>"
         },
         "on-click": "pavucontrol",
         "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
         "scroll-step": 5
     },
     "network": {
-        "format-wifi": " {signalStrength}%",
-        "format-ethernet": "",
-        "format-disconnected": "",
+        "format-wifi": "{icon} {signalStrength}%",
+        "format-ethernet": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+        "format-disconnected": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
         "tooltip-format": "{ifname}  {ipaddr}",
         "tooltip-format-wifi": "{essid}  ({signalStrength}%)\n{ifname}  {ipaddr}",
-        "on-click": "~/.local/bin/network-menu"
+        "on-click": "~/.local/bin/network-menu",
+        "format-icons": [
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>"
+        ]
     },
     "bluetooth": {
-        "format": "",
-        "format-disabled": "",
-        "format-connected": " {num_connections}",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+        "format-disabled": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+        "format-connected": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {num_connections}",
         "tooltip-format-connected": "{device_enumerate}",
-        "on-click": "blueman-manager"
+        "on-click": "blueman-manager",
+        "format-off": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>"
     },
     "battery": {
         "states": {
@@ -97,14 +107,17 @@
             "critical": 15
         },
         "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
-        "format-plugged": " {capacity}%",
+        "format-charging": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {capacity}%",
+        "format-plugged": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {capacity}%",
         "format-icons": [
-            "",
-            "",
-            "",
-            "",
-            ""
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>"
         ],
         "tooltip-format": "{timeTo}"
     },
@@ -112,14 +125,14 @@
         "tooltip": false,
         "format": "{icon}",
         "format-icons": {
-            "notification": "",
-            "none": "",
-            "dnd-notification": "",
-            "dnd-none": "",
-            "inhibited-notification": "",
-            "inhibited-none": "",
-            "dnd-inhibited-notification": "",
-            "dnd-inhibited-none": ""
+            "notification": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "none": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "dnd-notification": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "dnd-none": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "inhibited-notification": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "inhibited-none": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "dnd-inhibited-notification": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "dnd-inhibited-none": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>"
         },
         "return-type": "json",
         "exec-if": "which swaync-client",
@@ -133,13 +146,13 @@
         "spacing": 10
     },
     "custom/theme": {
-        "format": "",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
         "tooltip": true,
         "on-click": "~/.local/bin/style-menu",
         "tooltip-format": "Theme / bar style"
     },
     "custom/power": {
-        "format": "",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
         "tooltip": false,
         "on-click": "~/.local/bin/power-menu"
     },
@@ -155,13 +168,13 @@
         }
     },
     "clock#date": {
-        "format": "󰸗 {:%d.%m}",
-        "format-alt": "󰸗 {:%a, %d %b}",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {:%d.%m}",
+        "format-alt": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {:%a, %d %b}",
         "tooltip": false
     },
     "cpu": {
         "interval": 5,
-        "format": "󰍛 {usage}%",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {usage}%",
         "states": {
             "warning": 75,
             "critical": 90
@@ -171,7 +184,7 @@
     },
     "memory": {
         "interval": 10,
-        "format": "󰘚 {percentage}%",
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span> {percentage}%",
         "states": {
             "warning": 75,
             "critical": 90
@@ -182,8 +195,8 @@
     "idle_inhibitor": {
         "format": "{icon}",
         "format-icons": {
-            "activated": "󰈈",
-            "deactivated": "󰈉"
+            "activated": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>",
+            "deactivated": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>"
         },
         "tooltip-format-activated": "Screen stays on",
         "tooltip-format-deactivated": "Screen may sleep"
