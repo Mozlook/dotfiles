@@ -6,26 +6,58 @@
 # purpose: it only ever reads from $SUDO_USER's staging cache and writes to a
 # fixed set of paths inside the astronaut theme, so the rule can't be abused to
 # touch arbitrary files.
+#
+# The staging dir is user-controlled, so every read from it happens with the
+# USER's privileges (runuser), never root's: a symlink planted there pointing at
+# e.g. /etc/shadow just fails with "Permission denied" instead of being copied
+# out world-readable. Root only ever writes to fixed paths below $THEME_DIR.
 set -euo pipefail
 
 THEME_DIR="/usr/share/sddm/themes/sddm-astronaut-theme"
 META="$THEME_DIR/metadata.desktop"
+MAX_CONF=$((64 * 1024))          # theme.conf is a few hundred bytes
+MAX_WALL=$((64 * 1024 * 1024))   # generous cap for a 4K+ wallpaper
 [ -d "$THEME_DIR" ] || exit 0   # theme not installed — nothing to do
 
 user="${SUDO_USER:-}"
-[ -n "$user" ] || { echo "sddm-sync: must be run via sudo" >&2; exit 1; }
+[ -n "$user" ] && [ "$user" != root ] || { echo "sddm-sync: must be run via sudo by a regular user" >&2; exit 1; }
 home="$(getent passwd "$user" | cut -d: -f6)"
 stage="$home/.cache/theme/sddm"
-[ -f "$stage/theme.conf" ] || exit 0   # nothing staged yet
+
+as_user() { runuser -u "$user" -- "$@"; }
+
+# copy_in SRC DST MAX — read SRC as the user, write DST (0644) atomically as root.
+copy_in() {
+  local src="$1" dst="$2" max="$3" tmp
+  install -d -m755 "$(dirname "$dst")"
+  tmp="$(mktemp "$dst.XXXXXX")"
+  if as_user cat -- "$src" | head -c "$((max + 1))" > "$tmp" \
+     && [ "$(stat -c %s "$tmp")" -le "$max" ]; then
+    chmod 644 "$tmp"
+    mv -f "$tmp" "$dst"
+  else
+    rm -f "$tmp"
+    echo "sddm-sync: skipped $src (unreadable or too large)" >&2
+    return 1
+  fi
+}
+
+as_user test -f "$stage/theme.conf" || exit 0   # nothing staged yet
 
 # 1. rendered colors + layout
-install -Dm644 "$stage/theme.conf" "$THEME_DIR/Themes/dotfiles.conf"
+copy_in "$stage/theme.conf" "$THEME_DIR/Themes/dotfiles.conf" "$MAX_CONF"
 
 # 2. wallpaper (staged as wallpaper.<ext>) -> Backgrounds/dotfiles.<ext>
 rm -f "$THEME_DIR"/Backgrounds/dotfiles.* 2>/dev/null || true
-for f in "$stage"/wallpaper.*; do
-  [ -f "$f" ] && install -Dm644 "$f" "$THEME_DIR/Backgrounds/dotfiles.${f##*.}"
-done
+while IFS= read -r name; do
+  ext="${name##*.}"
+  case "${ext,,}" in
+    jpg|jpeg|png|webp|gif|bmp) ;;
+    *) echo "sddm-sync: ignoring $name (unsupported extension)" >&2; continue ;;
+  esac
+  copy_in "$stage/$name" "$THEME_DIR/Backgrounds/dotfiles.$ext" "$MAX_WALL" || true
+  break
+done < <(as_user find "$stage" -maxdepth 1 -name 'wallpaper.*' -printf '%f\n' 2>/dev/null)
 
 # 3. make the theme use our config (re-assert in case a package update reset it)
 if [ -f "$META" ] && ! grep -q '^ConfigFile=Themes/dotfiles.conf' "$META"; then
