@@ -3,10 +3,10 @@ pcall(require, "lspconfig")
 require("mason").setup({ PATH = "append" })
 
 -- Auto-install the formatters used by conform.lua (Mason only handles LSPs).
+-- Python formatting uses ruff, installed below as an LSP.
 require("mason-tool-installer").setup({
   ensure_installed = {
     "prettier",
-    "black",
     "gofumpt",
     "goimports",
     "csharpier",
@@ -15,9 +15,11 @@ require("mason-tool-installer").setup({
   run_on_start = true,
 })
 
+-- TypeScript/JavaScript is handled by typescript-tools (bottom of this file,
+-- tsserver from the project's node_modules or the global `typescript` package),
+-- so ts_ls is neither installed nor enabled.
 require("mason-lspconfig").setup({
   ensure_installed = {
-    "ts_ls",
     "tailwindcss",
     "emmet_ls",
     "basedpyright",
@@ -26,7 +28,6 @@ require("mason-lspconfig").setup({
     "omnisharp",
     "lua_ls",
   },
-  automatic_installation = true,
   automatic_enable = {
     exclude = { "ts_ls" },
   },

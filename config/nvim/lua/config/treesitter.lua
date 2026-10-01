@@ -1,22 +1,36 @@
 local ts = require("nvim-treesitter")
 
+-- Names must exist in nvim-treesitter's parsers.lua (main branch has no
+-- separate jsonc parser; `json` covers it).
 local languages = {
   "bash",
   "c_sharp",
   "css",
+  "diff",
+  "dockerfile",
+  "git_rebase",
+  "gitcommit",
+  "gitignore",
   "go",
+  "gomod",
+  "gosum",
   "html",
   "javascript",
   "json",
   "lua",
+  "make",
   "markdown",
   "markdown_inline",
   "python",
   "query",
+  "regex",
+  "sql",
+  "toml",
   "tsx",
   "typescript",
   "vim",
   "vimdoc",
+  "yaml",
 }
 
 ts.setup({

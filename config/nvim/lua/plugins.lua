@@ -3,7 +3,6 @@ return {
   { "nvim-lua/plenary.nvim", lazy = true },
   { "nvim-tree/nvim-web-devicons", lazy = true },
   { "folke/which-key.nvim", event = "VeryLazy", opts = {} },
-  { "numToStr/Comment.nvim", event = "VeryLazy", opts = {} },
   { "kylechui/nvim-surround", event = "VeryLazy", opts = {} },
   { "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },
   {
@@ -13,6 +12,11 @@ return {
     opts = { options = { theme = "auto" } },
   },
   { "lewis6991/gitsigns.nvim", event = { "BufReadPre", "BufNewFile" }, opts = {} },
+  {
+    "kdheepak/lazygit.nvim",
+    cmd = { "LazyGit", "LazyGitCurrentFile", "LazyGitLog" },
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
 
   -- Treesitter
   {

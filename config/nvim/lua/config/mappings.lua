@@ -5,6 +5,7 @@ wk.add({
   { "<leader>l", group = "lsp" },
   { "<leader>t", group = "terminal" },
   { "<leader>h", group = "harpoon" },
+  { "<leader>g", group = "git" },
 })
 
 -- Harpoon
@@ -51,9 +52,12 @@ end, { desc = "Diagnostics" })
 vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, { desc = "Rename" })
 vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, { desc = "Code Action" })
 vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
+-- Built into nvim 0.11+: K hover, grr references, grn rename, gra code action,
+-- gri implementation, gO document symbols.
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "LSP: Go to Definition" })
-vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "LSP: References" })
-vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "LSP: Hover" })
+
+-- Git
+vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
 
 -- Toggleterm
 vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<cr>", { desc = "Terminal: toggle" })

@@ -16,8 +16,9 @@ require("conform").setup({
     json = { "prettier" },
     yaml = { "prettier" },
     markdown = { "prettier" },
-    python = { "black" },
-    go = { "gofumpt", "goimports" },
+    python = { "ruff_organize_imports", "ruff_format" },
+    -- goimports first: it reformats with plain gofmt, gofumpt then applies its stricter rules
+    go = { "goimports", "gofumpt" },
     cs = { "csharpier" },
     lua = { "stylua" },
   },
