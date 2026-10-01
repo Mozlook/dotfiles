@@ -6,7 +6,7 @@
 @import "../../colors.css";
 
 * {
-    font-family: "GeistMono Nerd Font", "JetBrainsMono Nerd Font", "Symbols Nerd Font";
+    font-family: "GeistMono Nerd Font", "JetBrainsMono Nerd Font";
     font-size: 14px;
     font-weight: 500;
     color: @fg;

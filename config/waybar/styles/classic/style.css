@@ -2,7 +2,7 @@
 @import "../../colors.css";
 
 * {
-    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", "Font Awesome 6 Free";
+    font-family: "JetBrainsMono Nerd Font";
     font-size: 13px;
     font-weight: 600;
     min-height: 0;

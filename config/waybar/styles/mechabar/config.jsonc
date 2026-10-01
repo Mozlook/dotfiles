@@ -1,96 +1,98 @@
-// mechabar — angled, stepped segments. Layout and look adapted from
-// sejjy/mechabar (MIT, https://github.com/sejjy/mechabar); colors come from
-// the theme palette (colors.css), modules from ../../modules.jsonc.
+// mechabar — full-width bar of slanted segments, stepping from the accent
+// color at both ends to the bar background in the middle. Inspired by
+// sejjy/mechabar (MIT); colors from the theme palette, modules from
+// ../../modules.jsonc.
 //
-// Segments are drawn with powerline glyphs: custom/left#X / custom/right#X
-// paint a slant in color X over the segment beside it, so the bg_1 → bg_2 →
-// bg_3 order below must stay symmetric around the center.
+// The "/" edges are a powerline glyph (U+E0BC) in custom/sl#<from>-<to>:
+// drawn in the left segment's color over the right segment's background
+// (a = accent, a2 = accent2, s0..s2 = surface0..2, bg = bar background).
 {
     "layer": "top",
     "position": "top",
-    "mode": "dock",
-    "height": 0,
-    "margin": 0,
+    "height": 38,
     "spacing": 0,
     "reload_style_on_change": true,
-
-    "include": ["~/.config/waybar/modules.jsonc"],
-
+    "include": [
+        "~/.config/waybar/modules.jsonc"
+    ],
     "modules-left": [
-        "custom/theme",
-        "custom/left#bg_1",
+        "custom/power",
+        "custom/sl#a-s1",
+        "clock",
+        "custom/sl#s1-s0",
+        "clock#date",
+        "custom/sl#s0-bg"
+    ],
+    "modules-center": [
         "hyprland/workspaces",
-        "custom/right#bg_1",
         "hyprland/window"
     ],
-
-    "modules-center": [
-        "custom/left#bg_1",
-        "custom/updates",
-        "custom/left#bg_2",
-        "memory",
-        "custom/left#bg_3",
+    "modules-right": [
+        "tray",
+        "custom/sl#bg-s0",
         "cpu",
-        "custom/left_inverse#bg_3",
-
-        "custom/left#accent",
-        "custom/arch",
-        "custom/right#accent",
-
-        "custom/right_inverse#bg_3",
-        "idle_inhibitor",
-        "clock#time",
-        "custom/right#bg_3",
-        "clock#date",
-        "custom/right#bg_2",
+        "custom/sl#s0-s1",
+        "pulseaudio",
+        "custom/sl#s1-s2",
         "network",
         "bluetooth",
         "custom/notifications",
-        "custom/right#bg_1"
-    ],
-
-    "modules-right": [
-        "tray",
-        "custom/media",
-        "custom/left#bg_1",
-        "pulseaudio",
-        "custom/left#bg_2",
-        "backlight",
-        "custom/left#bg_3",
+        "custom/sl#s2-a2",
         "battery",
-        "custom/left_inverse#bg_3",
-        "custom/power"
+        "custom/theme"
     ],
-
-    // --- overrides of the shared modules ------------------------------------
     "hyprland/workspaces": {
-        "persistent-workspaces": { "*": 6 },
+        "persistent-workspaces": {
+            "*": 6
+        },
         "format": "{icon}",
-        "format-icons": { "active": "", "default": "" }
+        "format-icons": {
+            "active": "󰜋",
+            "default": "󰧞"
+        }
     },
     "hyprland/window": {
         "max-length": 40,
-        "rewrite": { "": "Desktop" }
+        "rewrite": {
+            "": ""
+        }
     },
-    "custom/updates": {
-        "exec-if": "true"
+    "clock#date": {
+        "format": "{:%a %d.%m}",
+        "format-alt": "{:%A, %d %B %Y}"
     },
     "network": {
         "format-wifi": "{icon}"
     },
     "bluetooth": {
-        "format-connected": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='-3072'></span>"
+        "format-connected": "<span font_desc='Material Symbols Rounded @FILL=1' size='large'></span>"
     },
-
-    // --- segment dividers (powerline glyphs) ---------------------------------
-    "custom/left#accent":        { "format": "", "tooltip": false },
-    "custom/left#bg_1":          { "format": "", "tooltip": false },
-    "custom/left#bg_2":          { "format": "", "tooltip": false },
-    "custom/left#bg_3":          { "format": "", "tooltip": false },
-    "custom/right#accent":       { "format": "", "tooltip": false },
-    "custom/right#bg_1":         { "format": "", "tooltip": false },
-    "custom/right#bg_2":         { "format": "", "tooltip": false },
-    "custom/right#bg_3":         { "format": "", "tooltip": false },
-    "custom/left_inverse#bg_3":  { "format": "", "tooltip": false },
-    "custom/right_inverse#bg_3": { "format": "", "tooltip": false }
+    "custom/sl#a-s1": {
+        "format": "",
+        "tooltip": false
+    },
+    "custom/sl#s1-s0": {
+        "format": "",
+        "tooltip": false
+    },
+    "custom/sl#s0-bg": {
+        "format": "",
+        "tooltip": false
+    },
+    "custom/sl#bg-s0": {
+        "format": "",
+        "tooltip": false
+    },
+    "custom/sl#s0-s1": {
+        "format": "",
+        "tooltip": false
+    },
+    "custom/sl#s1-s2": {
+        "format": "",
+        "tooltip": false
+    },
+    "custom/sl#s2-a2": {
+        "format": "",
+        "tooltip": false
+    }
 }

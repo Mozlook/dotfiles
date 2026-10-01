@@ -10,7 +10,6 @@ man-db
 man-pages
 less
 rsync
-wget
 unzip
 zip
 7zip
@@ -31,7 +30,6 @@ hyprlock
 hypridle
 hyprpolkitagent
 gnome-keyring   # secret service: browser/git/VS Code passwords
-libsecret
 qt5-wayland
 qt6-wayland
 
@@ -40,6 +38,7 @@ waybar
 rofi
 swaync
 pacman-contrib   # provides `checkupdates` for the waybar updates module
+libnotify        # notify-send (wallpaper-picker, network-menu)
 
 # --- wayland desktop glue ---
 awww   # wallpaper daemon (drop-in fork of swww); theme-set detects either
@@ -60,7 +59,7 @@ wireplumber
 
 # --- network / bluetooth ---
 networkmanager
-network-manager-applet   # provides nm-connection-editor (used by network-menu)
+nm-connection-editor   # GUI for saved connections (used by network-menu)
 bluez
 bluez-utils
 blueman
@@ -89,7 +88,8 @@ docker
 docker-compose
 docker-buildx
 # language toolchains (Mason also needs go + dotnet to install gopls, gofumpt,
-# goimports, csharpier and omnisharp)
+# goimports, csharpier and omnisharp, and npm for prettier, tailwindcss,
+# emmet_ls and basedpyright; gcc + make come with base-devel)
 go
 dotnet-sdk
 nodejs
@@ -97,8 +97,6 @@ npm
 typescript   # global tsserver for typescript-tools outside a project
 python
 uv
-gcc
-make
 # nvim-treesitter (main branch) builds parsers with the `tree-sitter` CLI
 tree-sitter-cli
 
@@ -106,10 +104,8 @@ tree-sitter-cli
 ttf-jetbrains-mono-nerd
 otf-geist-mono-nerd       # waybar styles
 ttf-material-symbols-variable   # waybar icons (Material Symbols Rounded)
-ttf-nerd-fonts-symbols
 noto-fonts
 noto-fonts-emoji
-woff2-font-awesome
 
 # --- look & feel ---
 papirus-icon-theme
