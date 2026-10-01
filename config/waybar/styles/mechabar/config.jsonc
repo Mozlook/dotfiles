@@ -74,7 +74,7 @@
         "format-connected": "<span font_desc='Material Symbols Rounded @FILL=1' size='large'></span>"
     },
     "custom/power": {
-        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='2048'></span>  <span size='22272'></span>"
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='2048'></span>  <span font_desc='JetBrainsMono Nerd Font' size='22579'></span>"
     },
     "custom/sl#s1-s0": {
         "format": "",

@@ -146,10 +146,14 @@ tooltip > box {
 
 /* --- "/" edges (custom/sl#<from>-<to>) ---------------------------------------
    The glyph is a triangle filling the cell above the "/" diagonal: its color
-   is the left segment, the label background the right one. At 29px the glyph
-   (1.3 × font size in Geist Mono) is 39px tall, which sets the bar height. */
+   is the left segment, the label background the right one.
+   Size is exact: Pango rounds a label's ascent and descent up separately, so
+   the glyph must reach past both rounded edges or a 1px anti-aliased seam
+   shows. JetBrainsMono NF at 29.4px covers them (label = bar = 39px); Geist
+   Mono has no size near 39px that does. Keep custom/power's edge in sync. */
 #custom-sl {
-    font-size: 29px;
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 29.4px;
 }
 #custom-sl.s1-s0 { color: @surface1; background-color: @surface0; }
 #custom-sl.s0-bg { color: @surface0; background-color: @bg; }
