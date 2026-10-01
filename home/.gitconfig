@@ -1,0 +1,32 @@
+# Global git config — stowed to ~/.gitconfig by install.sh.
+# Per-machine bits (work email, credential helpers, …) go in ~/.gitconfig.local.
+
+[user]
+	name = Mikołaj
+	email = 75731547+Mozlook@users.noreply.github.com
+
+[init]
+	defaultBranch = master
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+[fetch]
+	prune = true
+
+# delta (git-delta) as the pager for diff / log -p / show
+[core]
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	line-numbers = true
+[merge]
+	conflictStyle = zdiff3
+
+[include]
+	path = ~/.gitconfig.local
