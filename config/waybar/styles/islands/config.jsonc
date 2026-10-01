@@ -1,0 +1,52 @@
+// islands — no bar background, one floating island per group of modules.
+// Each island is a waybar group ("group/<name>" → CSS #<name>); a group whose
+// modules are all hidden (e.g. media when nothing plays) gets the .empty class
+// and disappears.
+{
+    "layer": "top",
+    "position": "top",
+    "height": 38,
+    "margin-top": 8,
+    "margin-left": 12,
+    "margin-right": 12,
+    "spacing": 8,
+    "reload_style_on_change": true,
+
+    "include": ["~/.config/waybar/modules.jsonc"],
+
+    "modules-left": [
+        "group/isl-ws",
+        "hyprland/window"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "group/isl-media",
+        "group/isl-status",
+        "group/isl-sys"
+    ],
+
+    "group/isl-ws": {
+        "orientation": "horizontal",
+        "modules": ["custom/power", "hyprland/workspaces"]
+    },
+    "group/isl-media": {
+        "orientation": "horizontal",
+        "modules": ["custom/media"]
+    },
+    "group/isl-status": {
+        "orientation": "horizontal",
+        "modules": ["pulseaudio", "network", "bluetooth", "backlight", "battery"]
+    },
+    "group/isl-sys": {
+        "orientation": "horizontal",
+        "modules": ["tray", "custom/updates", "custom/notifications", "custom/theme"]
+    },
+
+    // --- overrides of the shared modules ------------------------------------
+    "hyprland/window": {
+        "max-length": 45,
+        "rewrite": { "": "~" }
+    }
+}

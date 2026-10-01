@@ -1,0 +1,140 @@
+/* islands — floating islands on a transparent bar. Colors from the theme palette. */
+
+/* Ignore the GTK theme (https://github.com/Alexays/Waybar/issues/1351) */
+* { all: initial; }
+
+@import "../../colors.css";
+
+* {
+    font-family: "GeistMono Nerd Font", "JetBrainsMono Nerd Font", "Symbols Nerd Font";
+    font-size: 14px;
+    font-weight: 500;
+    color: @fg;
+}
+
+window#waybar {
+    background: transparent;
+}
+
+tooltip {
+    background-color: @bg;
+    border: 1px solid @surface2;
+    border-radius: 12px;
+}
+tooltip > box {
+    padding: 4px 8px;
+}
+
+/* --- islands ---------------------------------------------------------------- */
+#isl-ws,
+#window,
+#clock,
+#isl-media,
+#isl-status,
+#isl-sys {
+    background-color: alpha(@bg, 0.85);
+    border: 1px solid alpha(@surface2, 0.7);
+    border-radius: 12px;
+    padding: 0 12px;
+}
+
+/* a group whose modules are all hidden disappears completely */
+#isl-media.empty,
+#isl-media.empty * {
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    font-size: 0;
+    opacity: 0;
+}
+
+/* spacing between modules inside one island */
+#pulseaudio, #network, #bluetooth, #backlight, #battery,
+#custom-updates, #custom-notifications, #custom-theme, #tray {
+    padding: 0 7px;
+}
+
+/* --- left ------------------------------------------------------------------- */
+#custom-power {
+    font-size: 16px;
+    color: @accent;
+    padding: 0 10px 0 2px;
+}
+#custom-power:hover {
+    color: @error;
+}
+
+#workspaces button {
+    min-width: 22px;
+    margin: 6px 2px;
+    border-radius: 8px;
+    padding: 0 4px;
+    transition: all 0.18s ease;
+}
+#workspaces button label {
+    color: @muted;
+}
+#workspaces button:hover {
+    background-color: alpha(@surface2, 0.7);
+}
+#workspaces button.active {
+    min-width: 40px;
+    background-color: @accent;
+}
+#workspaces button.active label {
+    color: @bg;
+    font-weight: 700;
+}
+#workspaces button.urgent {
+    background-color: @error;
+}
+#workspaces button.urgent label {
+    color: @bg;
+}
+
+#window label {
+    color: @muted;
+}
+
+/* --- center ----------------------------------------------------------------- */
+#clock {
+    font-weight: 700;
+    padding: 0 16px;
+}
+#clock:hover {
+    color: @accent2;
+}
+
+/* --- right ------------------------------------------------------------------ */
+#custom-media {
+    color: @muted;
+}
+#custom-media:hover {
+    color: @fg;
+}
+
+#pulseaudio.muted        { color: @muted; }
+#network.disconnected    { color: @error; }
+#bluetooth.disabled,
+#bluetooth.off           { color: @muted; }
+#battery.charging        { color: @ok; }
+#battery.warning         { color: @warn; }
+#battery.critical        { color: @error; }
+#custom-updates          { color: @warn; }
+#custom-theme            { color: @accent2; font-size: 16px; }
+#custom-theme:hover      { color: @accent; }
+
+#pulseaudio:hover,
+#network:hover,
+#bluetooth:hover,
+#custom-updates:hover,
+#custom-notifications:hover {
+    color: @accent2;
+}
+
+#tray > .needs-attention {
+    background-color: alpha(@error, 0.4);
+    border-radius: 6px;
+}

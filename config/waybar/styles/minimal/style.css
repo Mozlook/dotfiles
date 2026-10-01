@@ -1,0 +1,103 @@
+/* minimal — thin flat bar with text labels. Colors from the theme palette. */
+
+/* Ignore the GTK theme (https://github.com/Alexays/Waybar/issues/1351) */
+* { all: initial; }
+
+@import "../../colors.css";
+
+* {
+    font-family: "GeistMono Nerd Font", "JetBrainsMono Nerd Font", "Noto Sans Symbols 2", monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: @fg;
+}
+
+window#waybar {
+    background-color: @bg;
+    border-bottom: 1px solid @surface1;
+}
+
+tooltip {
+    background-color: @bg;
+    border: 1px solid @surface2;
+}
+tooltip > box {
+    padding: 4px 8px;
+}
+
+/* every module: same spacing, no backgrounds */
+.module,
+#tray {
+    padding: 0 8px;
+}
+
+/* --- left ------------------------------------------------------------------- */
+#workspaces {
+    padding: 0 4px;
+}
+#workspaces button {
+    min-width: 20px;
+    margin: 4px 1px;
+    padding: 0 3px;
+}
+#workspaces button label {
+    color: @muted;
+}
+#workspaces button:hover {
+    background-color: @surface1;
+}
+#workspaces button.active {
+    background-color: @fg;
+}
+#workspaces button.active label {
+    color: @bg;
+    font-weight: 700;
+}
+#workspaces button.urgent {
+    background-color: @error;
+}
+#workspaces button.urgent label {
+    color: @bg;
+}
+
+#window {
+    border-left: 1px solid @surface2;
+    margin: 6px 0;
+    padding: 0 10px;
+}
+#window label {
+    color: @muted;
+}
+
+/* --- right ------------------------------------------------------------------ */
+#custom-media           { color: @muted; }
+#cpu.warning,
+#memory.warning,
+#battery.warning        { color: @warn; }
+#cpu.critical,
+#memory.critical,
+#battery.critical,
+#network.disconnected   { color: @error; }
+#custom-updates         { color: @warn; }
+
+#custom-theme {
+    border-left: 1px solid @surface2;
+    margin: 6px 0;
+    padding: 0 6px 0 12px;
+    color: @accent2;
+}
+#custom-power {
+    padding: 0 12px 0 6px;
+    color: @accent;
+}
+#custom-theme:hover,
+#custom-power:hover,
+#clock:hover,
+#pulseaudio:hover,
+#network:hover,
+#bluetooth:hover {
+    color: @accent2;
+}
+#custom-power:hover {
+    color: @error;
+}
