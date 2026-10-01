@@ -16,8 +16,8 @@
 @define-color shadow   shade(@bg, 0.75);
 
 * {
-    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font";
-    font-size: 13px;
+    font-family: "GeistMono Nerd Font", "JetBrainsMono Nerd Font", "Symbols Nerd Font";
+    font-size: 15px;
     font-weight: 500;
     color: @fg;
 }
@@ -55,7 +55,7 @@ tooltip > box {
 
 /* --- left ----------------------------------------------------------------- */
 #custom-theme {
-    font-size: 16px;
+    font-size: 18px;
     padding: 0 16px;
     color: @accent;
 }
@@ -74,7 +74,7 @@ tooltip > box {
     color: alpha(@muted, 0.5);
 }
 #workspaces button.active label {
-    font-size: 18.75px;
+    font-size: 21.5px;
     color: @accent;
 }
 #workspaces button.urgent label {
@@ -111,7 +111,7 @@ tooltip > box {
 #memory.critical, #cpu.critical { color: @error; }
 
 #custom-arch {
-    font-size: 18.75px;
+    font-size: 21.5px;
     padding: 0 10px 0 5px;
     background-color: @accent;
     color: @bg_0;
@@ -195,7 +195,7 @@ tooltip > box {
 #battery.critical { color: @error; }
 
 #custom-power {
-    font-size: 16px;
+    font-size: 18px;
     border-radius: 16px;
     padding: 0 19px 0 16px;
     color: @accent;
@@ -210,7 +210,7 @@ tooltip > box {
 #custom-right,
 #custom-left_inverse,
 #custom-right_inverse {
-    font-size: 19.5px;
+    font-size: 22.5px;
 }
 
 #custom-left.accent,
