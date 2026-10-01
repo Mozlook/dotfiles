@@ -26,10 +26,12 @@ tooltip > box {
 }
 
 /* --- left: accent → surface1 → surface0 → bar ------------------------------- */
+/* power draws its own "/" edge (U+E0BA in the label color) so the whole
+   shape changes on hover; the icon shares that dark color */
 #custom-power {
-    padding: 0 12px 0 16px;
+    padding: 0 0 0 16px;
     background-color: @accent;
-    color: @bg;
+    color: @surface1;
 }
 #custom-power:hover {
     background-color: @error;
@@ -145,11 +147,10 @@ tooltip > box {
 /* --- "/" edges (custom/sl#<from>-<to>) ---------------------------------------
    The glyph is a triangle filling the cell above the "/" diagonal: its color
    is the left segment, the label background the right one. At 29px the glyph
-   (1.3 × font size in Geist Mono) is exactly as tall as the 38px bar. */
+   (1.3 × font size in Geist Mono) is 39px tall, which sets the bar height. */
 #custom-sl {
     font-size: 29px;
 }
-#custom-sl.a-s1  { color: @accent;   background-color: @surface1; }
 #custom-sl.s1-s0 { color: @surface1; background-color: @surface0; }
 #custom-sl.s0-bg { color: @surface0; background-color: @bg; }
 #custom-sl.bg-s0 { color: @bg;       background-color: @surface0; }

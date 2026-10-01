@@ -5,11 +5,12 @@
 //
 // The "/" edges are a powerline glyph (U+E0BC) in custom/sl#<from>-<to>:
 // drawn in the left segment's color over the right segment's background
+// The power button draws its own edge (see custom/power).
 // (a = accent, a2 = accent2, s0..s2 = surface0..2, bg = bar background).
 {
     "layer": "top",
     "position": "top",
-    "height": 38,
+    "height": 0,
     "spacing": 0,
     "reload_style_on_change": true,
     "include": [
@@ -17,7 +18,6 @@
     ],
     "modules-left": [
         "custom/power",
-        "custom/sl#a-s1",
         "clock",
         "custom/sl#s1-s0",
         "clock#date",
@@ -48,6 +48,12 @@
         "format": "{icon}",
         "format-icons": {
             "active": "󰜋",
+            "1": "󰧞",
+            "2": "󰧞",
+            "3": "󰧞",
+            "4": "󰧞",
+            "5": "󰧞",
+            "6": "󰧞",
             "default": "󰧞"
         }
     },
@@ -67,9 +73,8 @@
     "bluetooth": {
         "format-connected": "<span font_desc='Material Symbols Rounded @FILL=1' size='large'></span>"
     },
-    "custom/sl#a-s1": {
-        "format": "",
-        "tooltip": false
+    "custom/power": {
+        "format": "<span font_desc='Material Symbols Rounded @FILL=1' size='large' rise='2048'></span>  <span size='22272'></span>"
     },
     "custom/sl#s1-s0": {
         "format": "",
