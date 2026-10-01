@@ -24,7 +24,7 @@ hl.env("XDG_SESSION_DESKTOP", "Hyprland")
 
 -- --- autostart ---------------------------------------------------------------
 hl.on("hyprland.start", function()
-    hl.exec_cmd("waybar")
+    hl.exec_cmd("~/.local/bin/waybar-launch")   -- bar style from ~/.cache/theme/bar (bar-set)
     hl.exec_cmd("swaync")
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     -- network + bluetooth are handled by the waybar modules (rofi wifi menu /
@@ -136,8 +136,8 @@ hl.bind(mod .. " + P",          hl.dsp.exec_cmd("cliphist list | rofi -dmenu | c
 -- lock / logout / suspend / reboot / shutdown (also the waybar power button)
 hl.bind(mod .. " + SHIFT + E",  hl.dsp.exec_cmd("~/.local/bin/power-menu"))
 
--- theme / wallpaper picker (SUPER+W is a workspace, so the picker is on T)
-hl.bind(mod .. " + T",          hl.dsp.exec_cmd("~/.local/bin/wallpaper-picker"))
+-- SUPER+T: change theme (wallpaper picker) or bar style (SUPER+W is a workspace)
+hl.bind(mod .. " + T",          hl.dsp.exec_cmd("~/.local/bin/style-menu"))
 
 -- workspaces (1,2,3 then Q,W,E)
 local workspaces = { ["1"] = 1, ["2"] = 2, ["3"] = 3, Q = 4, W = 5, E = 6 }

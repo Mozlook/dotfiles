@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# bar-set <name> — switch the waybar style and remember it for the next login.
+# Styles: directories in ~/.config/waybar/styles/. Colors still follow theme-set.
+set -euo pipefail
+
+STYLES="$HOME/.config/waybar/styles"
+name="${1:-}"
+if [ -z "$name" ]; then
+  echo "usage: bar-set <style>"; echo "styles: $(ls "$STYLES" | tr '\n' ' ')"; exit 1
+fi
+[ -f "$STYLES/$name/config.jsonc" ] || { echo "bar-set: no such style '$name' in $STYLES" >&2; exit 1; }
+
+mkdir -p "$HOME/.cache/theme"
+printf '%s\n' "$name" > "$HOME/.cache/theme/bar"
+exec "$(dirname "$(readlink -f "$0")")/waybar-launch"

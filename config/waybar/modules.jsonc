@@ -1,31 +1,7 @@
+// Shared module definitions — included by every bar style (styles/*/config.jsonc).
+// A style can override any field by defining the same module key again; its own
+// values win and the rest is inherited from here.
 {
-    "layer": "top",
-    "position": "top",
-    "height": 38,
-    "margin-top": 8,
-    "margin-left": 12,
-    "margin-right": 12,
-    "spacing": 0,
-    "modules-left": [
-        "custom/power",
-        "hyprland/workspaces",
-        "hyprland/window"
-    ],
-    "modules-center": [
-        "clock"
-    ],
-    "modules-right": [
-        "custom/media",
-        "custom/updates",
-        "backlight",
-        "pulseaudio",
-        "network",
-        "bluetooth",
-        "battery",
-        "custom/notifications",
-        "tray",
-        "custom/theme"
-    ],
     "hyprland/workspaces": {
         "format": "{icon}",
         "on-click": "activate",
@@ -56,8 +32,8 @@
         "calendar": {
             "mode": "month",
             "format": {
-                "today": "<span color='#F2C96D'><b>{}</b></span>",
-                "weekdays": "<span color='#7FA6C9'><b>{}</b></span>"
+                "today": "<b><u>{}</u></b>",
+                "weekdays": "<i>{}</i>"
             }
         }
     },
@@ -158,12 +134,63 @@
     },
     "custom/theme": {
         "format": "",
-        "tooltip": false,
-        "on-click": "~/.local/bin/wallpaper-picker"
+        "tooltip": true,
+        "on-click": "~/.local/bin/style-menu",
+        "tooltip-format": "Theme / bar style"
     },
     "custom/power": {
         "format": "",
         "tooltip": false,
         "on-click": "~/.local/bin/power-menu"
+    },
+    "clock#time": {
+        "format": "{:%H:%M}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "format": {
+                "today": "<b><u>{}</u></b>",
+                "weekdays": "<i>{}</i>"
+            }
+        }
+    },
+    "clock#date": {
+        "format": "󰸗 {:%d.%m}",
+        "format-alt": "󰸗 {:%a, %d %b}",
+        "tooltip": false
+    },
+    "cpu": {
+        "interval": 5,
+        "format": "󰍛 {usage}%",
+        "states": {
+            "warning": 75,
+            "critical": 90
+        },
+        "tooltip": false,
+        "on-click": "kitty -e btop"
+    },
+    "memory": {
+        "interval": 10,
+        "format": "󰘚 {percentage}%",
+        "states": {
+            "warning": 75,
+            "critical": 90
+        },
+        "tooltip-format": "{used:0.1f} / {total:0.1f} GiB",
+        "on-click": "kitty -e btop"
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "󰈈",
+            "deactivated": "󰈉"
+        },
+        "tooltip-format-activated": "Screen stays on",
+        "tooltip-format-deactivated": "Screen may sleep"
+    },
+    "custom/arch": {
+        "format": "󰣇",
+        "tooltip": false,
+        "on-click": "rofi -show drun"
     }
 }

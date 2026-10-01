@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# waybar-launch — (re)start waybar with the selected bar style.
+# The style name lives in ~/.cache/theme/bar (written by bar-set); each style is
+# a directory ~/.config/waybar/styles/<name>/ with config.jsonc + style.css.
+set -uo pipefail
+
+STYLES="$HOME/.config/waybar/styles"
+DEFAULT=mechabar
+
+style="$(cat "$HOME/.cache/theme/bar" 2>/dev/null || true)"
+[ -n "$style" ] && [ -f "$STYLES/$style/config.jsonc" ] || style="$DEFAULT"
+
+# stop the running bar (only ours, not other users'), wait until it's gone
+pkill -x -u "$(id -u)" waybar 2>/dev/null
+for _ in $(seq 1 25); do pgrep -x -u "$(id -u)" waybar >/dev/null || break; sleep 0.1; done
+
+setsid -f waybar -c "$STYLES/$style/config.jsonc" -s "$STYLES/$style/style.css" \
+  >/dev/null 2>&1 </dev/null

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# style-menu — SUPER+T: choose what to change, the color theme (wallpaper
+# picker) or the waybar style. Matches the power-menu rofi look.
+set -uo pipefail
+
+BIN="$(dirname "$(readlink -f "$0")")"
+THEME="$HOME/.config/rofi/power.rasi"
+STYLES="$HOME/.config/waybar/styles"
+THEME_ICON=$'\U000F03D8'   # nf-md-palette
+BAR_ICON=$'\U000F0CF0'     # nf-md-dock_top
+
+rofi_menu() { rofi -dmenu -i -theme "$THEME" "$@"; }
+
+sel="$(printf '%s\n' "$THEME_ICON  Theme" "$BAR_ICON  Bar" \
+        | rofi_menu -p "Change" -theme-str 'listview { lines: 2; }')" || exit 0
+
+case "$sel" in
+  *Theme) exec "$BIN/wallpaper-picker" ;;
+  *Bar)
+    current="$(cat "$HOME/.cache/theme/bar" 2>/dev/null || echo mechabar)"
+    mapfile -t styles < <(find "$STYLES" -mindepth 2 -maxdepth 2 -name config.jsonc -printf '%h\n' \
+                          | xargs -rn1 basename | sort)
+    [ "${#styles[@]}" -gt 0 ] || exit 0
+    row=0; for i in "${!styles[@]}"; do [ "${styles[$i]}" = "$current" ] && row=$i; done
+    pick="$(printf '%s\n' "${styles[@]}" \
+            | rofi_menu -p "Bar" -selected-row "$row" \
+                -theme-str "listview { lines: ${#styles[@]}; }")" || exit 0
+    [ -n "$pick" ] && exec "$BIN/bar-set" "$pick"
+    ;;
+esac

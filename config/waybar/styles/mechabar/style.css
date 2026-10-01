@@ -1,0 +1,237 @@
+/* mechabar — adapted from sejjy/mechabar (MIT). Colors from the theme palette. */
+
+/* Ignore the GTK theme (https://github.com/Alexays/Waybar/issues/1351) */
+* { all: initial; }
+
+@import "../../colors.css";
+
+/* mechabar's color roles mapped onto the palette */
+@define-color bg_0     @bg;
+@define-color bg_1     @surface0;
+@define-color bg_2     @surface1;
+@define-color bg_3     @surface2;
+@define-color bg_alt   @surface1;
+@define-color fg_alt   alpha(@fg, 0.7);
+@define-color border   @muted;
+@define-color shadow   shade(@bg, 0.75);
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font";
+    font-size: 13px;
+    font-weight: 500;
+    color: @fg;
+}
+
+#waybar {
+    background-color: @shadow;
+}
+#waybar > box {
+    margin: 3px;
+    background-color: @bg_0;
+}
+
+/* vertically align modules */
+.module {
+    margin-bottom: -1px;
+}
+
+button {
+    border-radius: 16px;
+    padding: 0 10px;
+    min-width: 16px;
+}
+button:hover {
+    background-color: @bg_alt;
+    color: @fg_alt;
+}
+
+tooltip {
+    border: 2px solid @border;
+    background-color: @bg_0;
+}
+tooltip > box {
+    padding: 0 6px;
+}
+
+/* --- left ----------------------------------------------------------------- */
+#custom-theme {
+    font-size: 16px;
+    padding: 0 16px;
+    color: @accent;
+}
+#custom-theme:hover {
+    color: @accent2;
+}
+
+#workspaces {
+    padding: 0 1px;
+    background-color: @bg_1;
+}
+#workspaces button label {
+    color: @muted;
+}
+#workspaces button.empty label {
+    color: alpha(@muted, 0.5);
+}
+#workspaces button.active label {
+    font-size: 18.75px;
+    color: @accent;
+}
+#workspaces button.urgent label {
+    color: @error;
+}
+
+/* large Unicode characters must not grow the bar (Waybar#2026) */
+#window {
+    margin: -1px 0;
+}
+#window label {
+    padding-left: 12px;
+    color: @fg_alt;
+}
+
+/* --- center --------------------------------------------------------------- */
+#custom-updates {
+    padding: 0 8px 0 4px;
+    background-color: @bg_1;
+}
+#custom-updates:hover {
+    color: @fg_alt;
+}
+
+#memory {
+    padding: 0 4px;
+    background-color: @bg_2;
+}
+#cpu {
+    padding: 0 4px;
+    background-color: @bg_3;
+}
+#memory.warning, #cpu.warning   { color: @warn; }
+#memory.critical, #cpu.critical { color: @error; }
+
+#custom-arch {
+    font-size: 18.75px;
+    padding: 0 10px 0 5px;
+    background-color: @accent;
+    color: @bg_0;
+}
+
+#idle_inhibitor {
+    padding: 0 8px 0 4px;
+    background-color: @bg_3;
+}
+#idle_inhibitor.activated {
+    color: @accent2;
+}
+#idle_inhibitor:hover {
+    color: @fg_alt;
+}
+#clock.time {
+    padding-right: 6px;
+    background-color: @bg_3;
+}
+#clock.date {
+    padding: 0 4px 0 6px;
+    background-color: @bg_2;
+}
+#clock.date:hover {
+    color: @fg_alt;
+}
+
+#network {
+    padding: 0 6px 0 4px;
+    background-color: @bg_1;
+}
+#network.disconnected {
+    color: @error;
+}
+#bluetooth {
+    padding: 0 4px;
+    background-color: @bg_1;
+}
+#bluetooth.disabled, #bluetooth.off {
+    color: @muted;
+}
+#custom-notifications {
+    padding: 0 6px 0 4px;
+    background-color: @bg_1;
+}
+#network:hover, #bluetooth:hover, #custom-notifications:hover {
+    color: @fg_alt;
+}
+
+/* --- right ---------------------------------------------------------------- */
+#tray {
+    padding: 0 8px;
+}
+#custom-media {
+    padding: 0 12px;
+    color: @fg_alt;
+}
+
+#pulseaudio {
+    padding: 0 4px;
+    background-color: @bg_1;
+}
+#pulseaudio.muted {
+    color: @muted;
+}
+#pulseaudio:hover {
+    color: @fg_alt;
+}
+
+#backlight {
+    padding: 0 4px;
+    background-color: @bg_2;
+}
+
+#battery {
+    padding: 0 4px;
+    background-color: @bg_3;
+}
+#battery.charging { color: @ok; }
+#battery.warning  { color: @warn; }
+#battery.critical { color: @error; }
+
+#custom-power {
+    font-size: 16px;
+    border-radius: 16px;
+    padding: 0 19px 0 16px;
+    color: @accent;
+}
+#custom-power:hover {
+    background-color: @bg_alt;
+    color: @error;
+}
+
+/* --- dividers ------------------------------------------------------------- */
+#custom-left,
+#custom-right,
+#custom-left_inverse,
+#custom-right_inverse {
+    font-size: 19.5px;
+}
+
+#custom-left.accent,
+#custom-right.accent {
+    color: @accent;
+}
+#custom-left.bg_1,
+#custom-right.bg_1 {
+    color: @bg_1;
+}
+#custom-left.bg_2,
+#custom-right.bg_2 {
+    background-color: @bg_1;
+    color: @bg_2;
+}
+#custom-left.bg_3,
+#custom-right.bg_3 {
+    background-color: @bg_2;
+    color: @bg_3;
+}
+#custom-left_inverse.bg_3,
+#custom-right_inverse.bg_3 {
+    color: @bg_3;
+}
