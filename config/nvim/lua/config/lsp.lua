@@ -29,7 +29,8 @@ require("mason-lspconfig").setup({
     "lua_ls",
   },
   automatic_enable = {
-    exclude = { "ts_ls" },
+    -- metals is started by nvim-metals (config/metals.lua)
+    exclude = { "ts_ls", "metals" },
   },
 })
 

@@ -24,6 +24,7 @@ local languages = {
   "python",
   "query",
   "regex",
+  "scala",
   "sql",
   "toml",
   "tsx",

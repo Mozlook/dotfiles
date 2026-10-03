@@ -97,6 +97,9 @@ npm
 typescript   # global tsserver for typescript-tools outside a project
 python
 uv
+# Scala: sbt pulls the Scala version from build.sbt; nvim-metals installs Metals
+jdk21-openjdk
+sbt
 # nvim-treesitter (main branch) builds parsers with the `tree-sitter` CLI
 tree-sitter-cli
 

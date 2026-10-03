@@ -88,6 +88,16 @@ return {
     end,
   },
 
+  -- Scala (Metals is managed by nvim-metals, not Mason)
+  {
+    "scalameta/nvim-metals",
+    ft = { "scala", "sbt", "java" },
+    dependencies = { "nvim-lua/plenary.nvim", "hrsh7th/cmp-nvim-lsp" },
+    config = function()
+      require("config.metals")
+    end,
+  },
+
   -- Completion / snippets
   {
     "hrsh7th/nvim-cmp",

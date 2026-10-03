@@ -4,3 +4,4 @@
 bibata-cursor-theme-bin
 sddm-astronaut-theme
 brave-bin
+coursier   # nvim-metals installs the Metals server with it
