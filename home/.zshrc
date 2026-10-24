@@ -40,15 +40,6 @@ command -v zoxide   >/dev/null && eval "$(zoxide init zsh)"
 [ -f /usr/share/fzf/key-bindings.zsh ] && source /usr/share/fzf/key-bindings.zsh
 [ -f /usr/share/fzf/completion.zsh ] && source /usr/share/fzf/completion.zsh
 
-# --- greeting ----------------------------------------------------------------
-# fastfetch only in a fresh kitty window — not in nvim's :terminal/toggleterm
-# ($NVIM) or VS Code's terminal, which inherit KITTY_WINDOW_ID when launched from kitty.
-if [[ -n $KITTY_WINDOW_ID && -z $NVIM && $TERM_PROGRAM != vscode ]] && command -v fastfetch >/dev/null; then
-  # clear re-shows fastfetch here (Ctrl-L still does a plain clear)
-  clear() { command clear; fastfetch; }
-  fastfetch
-fi
-
 # --- plugins (installed via pacman) -----------------------------------------
 # Last on purpose: zsh-syntax-highlighting must wrap every widget defined above.
 src() { [ -f "$1" ] && source "$1"; }
